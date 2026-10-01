@@ -5,13 +5,13 @@
  * ink = fondo oscuro, paper = texto claro, accent = el color que hace que la web se recuerde.
  */
 :root {
-  /* Papaya: el naranja de McLaren, el equipo de Lando. */
-  --ink: #0e0d0c;
-  --ink-soft: #181614;
-  --line: #2b2723;
-  --paper: #f3eee6;
-  --muted: #978f86;
-  --accent: #ff6b1a;
+  /* Rojo carrera: negro con rojo intenso, como un auto de F1. */
+  --ink: #111111;
+  --ink-soft: #1a1a1a;
+  --line: #2d2d2d;
+  --paper: #efebe4;
+  --muted: #9a958e;
+  --accent: #ff3d2e;
 }
 
 @theme inline {
