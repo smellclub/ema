@@ -8,12 +8,38 @@ import { contactSchema } from "@/lib/validation";
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 
-// Mensaje genérico: nunca mostramos errores internos ni de la base.
-const GENERIC_ERROR = "No se pudo enviar. Probá de nuevo en un rato.";
+/**
+ * Si falla algo del servidor, nunca mostramos el error real de la base (le da pistas a un atacante).
+ * Mostramos un código corto que solo vos sabés leer, y el visitante igual puede escribirte por WhatsApp:
+ *   E1 = faltan SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY en Vercel
+ *   E2 = no existe la tabla portfolio_leads (falta correr supabase/schema.sql en ESE proyecto)
+ *   E3 = la clave no tiene permiso (pusiste la anon/publishable en vez de la service_role/secret)
+ *   E4 = no se pudo conectar (SUPABASE_URL mal escrita)
+ *   E5 = otro error (mirá los logs de Vercel, empiezan con [portfolio_leads])
+ */
+function serverError(code: string): string {
+  return `No se pudo enviar (código ${code}). Escribime por WhatsApp mientras lo arreglo.`;
+}
+
+/** Traduce el error de Supabase a uno de los códigos de arriba. */
+function codeFor(error: { code?: string; message?: string }, status: number): string {
+  const msg = error.message ?? "";
+  if (status === 404 || error.code === "PGRST205" || error.code === "42P01" || /does not exist|schema cache/i.test(msg)) return "E2";
+  if (status === 401 || status === 403 || error.code === "42501" || /permission denied|row-level security|invalid api key|jwt|unauthorized/i.test(msg)) return "E3";
+  if (/fetch failed|ENOTFOUND|ECONNREFUSED|invalid url/i.test(msg)) return "E4";
+  return "E5";
+}
 
 export type ContactState =
   | { status: "idle" }
-  | { status: "error"; message: string; fieldErrors?: Record<string, string>; values?: Record<string, string> }
+  | {
+      status: "error";
+      message: string;
+      fieldErrors?: Record<string, string>;
+      values?: Record<string, string>;
+      /** true si el problema es nuestro (no del visitante): el form ofrece WhatsApp. */
+      serverFault?: boolean;
+    }
   | { status: "success"; name: string };
 
 /** IP del visitante, hasheada. Nunca guardamos la IP en texto plano. */
@@ -47,31 +73,36 @@ export async function sendContact(_prev: ContactState, formData: FormData): Prom
   }
   const data = parsed.data;
 
-  const supabase = getSupabaseAdmin();
+  let supabase;
+  try {
+    supabase = getSupabaseAdmin();
+  } catch {
+    return { status: "error", message: serverError("E4"), values, serverFault: true };
+  }
   if (!supabase) {
     console.warn("[portfolio_leads] Faltan SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY");
-    return { status: "error", message: GENERIC_ERROR, values };
+    return { status: "error", message: serverError("E1"), values, serverFault: true };
   }
 
   // 3. Rate limit: máximo 5 mensajes por hora desde la misma IP. Se cuenta en la base
   //    porque en Vercel cada pedido puede caer en un servidor distinto.
   const ipHash = await hashedClientIp();
   const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
-  const { count, error: countError } = await supabase
+  const { count, error: countError, status: countStatus } = await supabase
     .from("portfolio_leads")
     .select("id", { count: "exact", head: true })
     .eq("ip_hash", ipHash)
     .gte("created_at", since);
   if (countError) {
-    console.error("[portfolio_leads] error en rate limit", countError.message);
-    return { status: "error", message: GENERIC_ERROR, values };
+    console.error("[portfolio_leads] error en rate limit", countStatus, countError.code, countError.message);
+    return { status: "error", message: serverError(codeFor(countError, countStatus)), values, serverFault: true };
   }
   if ((count ?? 0) >= RATE_LIMIT_MAX) {
     return { status: "error", message: "Mandaste varios mensajes seguidos. Esperá un rato y probá de nuevo.", values };
   }
 
   // 4. Guardar.
-  const { error } = await supabase.from("portfolio_leads").insert({
+  const { error, status } = await supabase.from("portfolio_leads").insert({
     name: data.name,
     contact: data.contact,
     business: data.business,
@@ -81,8 +112,8 @@ export async function sendContact(_prev: ContactState, formData: FormData): Prom
     privacy_accepted_at: new Date().toISOString(),
   });
   if (error) {
-    console.error("[portfolio_leads] error guardando", error.code, error.message);
-    return { status: "error", message: GENERIC_ERROR, values };
+    console.error("[portfolio_leads] error guardando", status, error.code, error.message);
+    return { status: "error", message: serverError(codeFor(error, status)), values, serverFault: true };
   }
 
   return { status: "success", name: data.name.split(" ")[0] };

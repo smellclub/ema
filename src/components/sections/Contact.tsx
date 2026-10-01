@@ -8,10 +8,11 @@ import { gsap, useGSAP, prefersReducedMotion } from "@/components/motion/gsap";
 /** Contacto: todo en el color de acento, con un "HABLEMOS" gigante que se desliza con el scroll. */
 export function Contact() {
   const root = useRef<HTMLElement>(null);
-  const { email, instagram, linkedin } = site.links;
+  const { email, whatsapp, instagram, linkedin } = site.links;
   const direct = [
+    whatsapp && { label: "WhatsApp", href: whatsapp, text: `WhatsApp · ${site.phoneDisplay}` },
+    instagram && { label: "Instagram", href: instagram, text: `Instagram · @${instagram.split("/").filter(Boolean).pop()}` },
     email && { label: "Email", href: `mailto:${email}`, text: email },
-    instagram && { label: "Instagram", href: instagram, text: "Instagram" },
     linkedin && { label: "LinkedIn", href: linkedin, text: "LinkedIn" },
   ].filter(Boolean) as { label: string; href: string; text: string }[];
 
@@ -56,7 +57,11 @@ export function Contact() {
             <ul className="mt-10 space-y-3">
               {direct.map((d) => (
                 <li key={d.label}>
-                  <a href={d.href} className="text-xl font-semibold underline decoration-2 underline-offset-8 hover:no-underline">
+                  <a
+                    href={d.href}
+                    {...(d.href.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })}
+                    className="text-xl font-semibold underline decoration-2 underline-offset-8 hover:no-underline"
+                  >
                     {d.text}
                   </a>
                 </li>

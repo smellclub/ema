@@ -4,7 +4,7 @@ import { LocalTime } from "@/components/ui/LocalTime";
 
 export function Footer() {
   const links = Object.entries(site.links).filter(([, v]) => v && !v.startsWith("mailto")) as [string, string][];
-  const names: Record<string, string> = { email: "Email", instagram: "Instagram", linkedin: "LinkedIn", github: "GitHub" };
+  const names: Record<string, string> = { email: "Email", whatsapp: "WhatsApp", instagram: "Instagram", linkedin: "LinkedIn", github: "GitHub" };
 
   return (
     <footer className="relative overflow-hidden bg-ink pt-20">

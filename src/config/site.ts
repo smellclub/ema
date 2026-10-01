@@ -2,8 +2,8 @@
  * TODO el contenido de la web vive acá. Para cambiar un texto, un proyecto o un link,
  * se toca este archivo y nada más.
  *
- * Privacidad: a propósito NO hay apellido, edad, colegio, dirección ni teléfono personal.
- * Los clientes te escriben por el formulario (o por los links que completes abajo).
+ * Privacidad: a propósito NO hay edad, colegio ni dirección.
+ * Los clientes te escriben por el formulario, WhatsApp o Instagram (links abajo).
  */
 
 export type Project = {
@@ -184,14 +184,18 @@ export const site = {
 
   /**
    * Redes y contacto públicos. Si un campo queda vacío, no se muestra.
-   * Usá cuentas de trabajo, no tu número ni tu Instagram personal.
+   * WhatsApp va en formato internacional sin "+", espacios ni el 0 de adelante (598 + 99...).
    */
   links: {
     email: "",
-    instagram: "",
+    whatsapp: "https://wa.me/59899019137",
+    instagram: "https://www.instagram.com/emaa_yordi/",
     linkedin: "",
     github: "https://github.com/smellclub",
   },
+
+  /** Cómo se muestra el número en la web (el link de arriba es el que funciona). */
+  phoneDisplay: "+598 99 019 137",
 
   legal: {
     lastUpdated: "1 de octubre de 2026",

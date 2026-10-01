@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { startTransition, useActionState } from "react";
 import { site } from "@/config/site";
 import { sendContact, type ContactState } from "@/app/actions";
 
@@ -47,7 +47,17 @@ export function ContactForm() {
   });
 
   return (
-    <form action={action} noValidate className="relative grid gap-8">
+    <form
+      // Con action={...} React vacía el formulario después de cada envío, también si hubo error,
+      // y el select y la casilla quedaban en blanco. Enviando a mano no se borra nada.
+      onSubmit={(e) => {
+        e.preventDefault();
+        const data = new FormData(e.currentTarget);
+        startTransition(() => action(data));
+      }}
+      noValidate
+      className="relative grid gap-8"
+    >
       {/* Honeypot: invisible para personas, los bots lo completan. */}
       <div aria-hidden className="absolute -left-[9999px]">
         <label>
@@ -147,6 +157,19 @@ export function ContactForm() {
       {state.status === "error" && (
         <p role="alert" className="rounded-lg bg-ink px-4 py-3 text-sm text-paper">
           {state.message}
+          {state.serverFault && site.links.whatsapp && (
+            <>
+              {" "}
+              <a
+                href={site.links.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-accent underline underline-offset-4"
+              >
+                Abrir WhatsApp ↗
+              </a>
+            </>
+          )}
         </p>
       )}
 

@@ -18,8 +18,14 @@ export function getSupabaseAdmin(): SupabaseClient | null {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return null;
 
-  client = createClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
+  try {
+    client = createClient(url, key, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+  } catch (err) {
+    // createClient tira error si SUPABASE_URL no es una URL válida.
+    console.error("[portfolio_leads] SUPABASE_URL inválida", err instanceof Error ? err.message : err);
+    throw new Error("invalid url");
+  }
   return client;
 }
