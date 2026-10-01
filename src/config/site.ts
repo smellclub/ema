@@ -93,7 +93,7 @@ export const site = {
       kind: "Perfumería · Mi marca",
       tag: "Proyecto propio",
       year: "2026",
-      url: "https://smell-club-claude.vercel.app",
+      url: "https://smellclub-uy.vercel.app",
       summary:
         "La tienda online de mi emprendimiento: perfumes árabes y de diseñador, con decants para probar antes de comprar. Acá aprendo con plata propia qué hace que alguien compre.",
       features: ["Tienda online", "Carrito", "Botón a WhatsApp", "Marca propia"],
