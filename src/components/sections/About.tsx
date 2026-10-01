@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { site } from "@/config/site";
 import { gsap, useGSAP, prefersReducedMotion } from "@/components/motion/gsap";
-import { BrowserIcon } from "@/components/ui/BrowserIcon";
+import { CursorIcon } from "@/components/ui/CursorIcon";
 
 /**
  * Sobre mí. El texto se "enciende" palabra por palabra a medida que scrolleás,
@@ -25,7 +25,7 @@ export function About() {
           scrollTrigger: { trigger: "[data-manifesto]", start: "top 75%", end: "bottom 45%", scrub: true },
         },
       );
-      // La ventanita se inclina y baja un poco con el scroll.
+      // El cursor se inclina y baja un poco con el scroll.
       gsap.fromTo("[data-ball]", { rotate: -12 }, {
         rotate: 10,
         y: 120,
@@ -53,7 +53,7 @@ export function About() {
             <span className="font-semibold text-ink">02</span> — Sobre mí
           </p>
           <div data-ball className="-mt-6 w-24 md:w-40">
-            <BrowserIcon />
+            <CursorIcon />
           </div>
         </div>
 

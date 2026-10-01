@@ -113,13 +113,37 @@ html.lenis body {
   transition-timing-function: linear;
 }
 
+/* El "clic" del cursor de Sobre mí: el anillo y el punto laten. */
+@keyframes click-pulse {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+.click-ring,
+.click-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: click-pulse 1.8s ease-in-out infinite;
+}
+.click-dot {
+  animation-delay: 0.2s;
+}
+
 /*
  * Quien pide menos movimiento en su sistema (accesibilidad) ve todo quieto.
  * Las animaciones de GSAP también lo chequean en el código.
  */
 @media (prefers-reduced-motion: reduce) {
   .marquee-track,
-  .spin-slow {
+  .spin-slow,
+  .click-ring,
+  .click-dot {
     animation: none;
   }
   .scroll-shot {
