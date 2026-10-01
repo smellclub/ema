@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { site } from "@/config/site";
 import { gsap, useGSAP, prefersReducedMotion } from "@/components/motion/gsap";
-import { Basketball } from "@/components/ui/Basketball";
+import { BrowserIcon } from "@/components/ui/BrowserIcon";
 
 /**
  * Sobre mí. El texto se "enciende" palabra por palabra a medida que scrolleás,
@@ -25,9 +25,9 @@ export function About() {
           scrollTrigger: { trigger: "[data-manifesto]", start: "top 75%", end: "bottom 45%", scrub: true },
         },
       );
-      // La pelota gira y baja con el scroll.
-      gsap.to("[data-ball]", {
-        rotate: 540,
+      // La ventanita se inclina y baja un poco con el scroll.
+      gsap.fromTo("[data-ball]", { rotate: -12 }, {
+        rotate: 10,
         y: 120,
         ease: "none",
         scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: true },
@@ -53,7 +53,7 @@ export function About() {
             <span className="font-semibold text-ink">02</span> — Sobre mí
           </p>
           <div data-ball className="-mt-6 w-24 md:w-40">
-            <Basketball />
+            <BrowserIcon />
           </div>
         </div>
 
