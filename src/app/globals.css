@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/*
+ * Paleta: casi negro con un toque verde, crema de papel y un verde lima ácido
+ * (el color que hace que la web se recuerde). Si querés cambiar el acento, es solo --color-lime.
+ */
+@theme inline {
+  --color-ink: #0b0c09;
+  --color-ink-soft: #141612;
+  --color-line: #262922;
+  --color-paper: #f1f0e8;
+  --color-muted: #8d9086;
+  --color-lime: #d4ff3a;
+  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-geist);
+  --font-hand: var(--font-marker);
+}
+
+html {
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+::selection {
+  background: var(--color-lime);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-lime);
+  outline-offset: 3px;
+}
+
+/* Lenis (scroll suave): estas reglas vienen de su documentación. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Grano de película encima de todo. SVG inline: no hace falta tocar la CSP. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Texto con contorno (para las letras gigantes "vacías"). */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-paper);
+}
+.text-outline-lime {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-lime);
+}
+
+/* Marquesina infinita: el contenido está duplicado y se corre exactamente la mitad. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee var(--marquee-speed, 30s) linear infinite;
+}
+.marquee-reverse {
+  animation-direction: reverse;
+}
+
+/* El sello circular que gira. */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-slow {
+  animation: spin-slow 16s linear infinite;
+}
+
+/* En la tarjeta de un trabajo, al pasar el mouse la captura "scrollea" la web entera. */
+.scroll-shot {
+  transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.group:hover .scroll-shot,
+.group:focus-within .scroll-shot {
+  transform: translateY(var(--shift));
+  transition-duration: var(--dur, 6s);
+  transition-timing-function: linear;
+}
+
+/*
+ * Quien pide menos movimiento en su sistema (accesibilidad) ve todo quieto.
+ * Las animaciones de GSAP también lo chequean en el código.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .spin-slow {
+    animation: none;
+  }
+  .scroll-shot {
+    transition: none;
+  }
+}
+
+/* Ancho condensado de Bricolage para los títulos gigantes. */
+.font-display {
+  font-stretch: 75%;
+  font-variation-settings: "opsz" 96;
+}
