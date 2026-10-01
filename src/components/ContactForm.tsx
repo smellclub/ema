@@ -156,7 +156,7 @@ export function ContactForm() {
         className="group inline-flex w-full items-center justify-between rounded-full bg-ink px-8 py-5 text-lg font-semibold text-paper transition-transform hover:scale-[1.02] disabled:opacity-60 md:w-auto md:gap-10"
       >
         {pending ? "Enviando…" : "Enviar mensaje"}
-        <span aria-hidden className="text-lime transition-transform duration-500 group-hover:rotate-45">
+        <span aria-hidden className="text-accent transition-transform duration-500 group-hover:rotate-45">
           ↗
         </span>
       </button>

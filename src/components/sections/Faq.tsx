@@ -21,7 +21,7 @@ export function Faq() {
                 {item.q}
                 <span
                   aria-hidden
-                  className="flex size-10 shrink-0 items-center justify-center rounded-full border border-line text-lime transition-transform duration-300 group-open:rotate-45"
+                  className="flex size-10 shrink-0 items-center justify-center rounded-full border border-line text-accent transition-transform duration-300 group-open:rotate-45"
                 >
                   +
                 </span>

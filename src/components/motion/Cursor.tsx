@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap, prefersReducedMotion } from "./gsap";
 
 /**
- * Cursor propio: un punto lima que sigue al mouse con un poco de retraso
+ * Cursor propio: un punto de color que sigue al mouse con un poco de retraso
  * y se agranda sobre links y botones. Sobre un elemento con data-cursor="Texto"
  * muestra ese texto adentro (por ejemplo "Ver" en los trabajos).
  * Solo en compus con mouse: en celulares no existe el cursor.
@@ -55,7 +55,7 @@ export function Cursor() {
       ref={dot}
       hidden
       aria-hidden
-      className={`pointer-events-none fixed left-0 top-0 z-[95] size-3.5 [&:not([hidden])]:flex items-center justify-center rounded-full bg-lime ${label ? "" : "mix-blend-difference"}`}
+      className={`pointer-events-none fixed left-0 top-0 z-[95] size-3.5 [&:not([hidden])]:flex items-center justify-center rounded-full bg-accent ${label ? "" : "mix-blend-difference"}`}
     >
       {label && <span className="text-xs font-semibold uppercase tracking-widest text-ink">{label}</span>}
     </div>

@@ -70,7 +70,7 @@ export function Preloader() {
   if (gone) return null;
   return (
     <>
-      <div ref={curtain} aria-hidden className="fixed inset-0 z-[98] bg-lime" />
+      <div ref={curtain} aria-hidden className="fixed inset-0 z-[98] bg-accent" />
       <div
         ref={root}
         aria-hidden
@@ -85,12 +85,12 @@ export function Preloader() {
               </span>
             ))}
           </div>
-          <span data-count className="font-display text-5xl font-bold tabular-nums text-lime md:text-8xl">
+          <span data-count className="font-display text-5xl font-bold tabular-nums text-accent md:text-8xl">
             000
           </span>
         </div>
         <div className="h-px w-full bg-line">
-          <div data-bar className="h-px w-full origin-left scale-x-0 bg-lime" />
+          <div data-bar className="h-px w-full origin-left scale-x-0 bg-accent" />
         </div>
       </div>
     </>

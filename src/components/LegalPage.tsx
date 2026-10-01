@@ -5,7 +5,7 @@ import { site } from "@/config/site";
 export function LegalPage({ title, children }: { title: string; children: ReactNode }) {
   return (
     <main id="contenido" className="mx-auto max-w-3xl px-5 py-16 md:px-8 md:py-24">
-      <Link href="/" className="text-sm text-lime hover:underline">
+      <Link href="/" className="text-sm text-accent hover:underline">
         ← Volver
       </Link>
       <h1 className="mt-10 font-display text-6xl font-extrabold uppercase leading-[0.9]">{title}</h1>

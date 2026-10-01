@@ -89,7 +89,7 @@ export function About() {
                 key={item.id}
                 data-off
                 className={`group flex min-h-56 flex-col md:min-h-72 justify-between rounded-2xl p-7 transition-transform duration-500 hover:-translate-y-2 ${
-                  i % 2 ? "bg-ink text-paper hover:rotate-1" : "bg-lime text-ink hover:-rotate-1"
+                  i % 2 ? "bg-ink text-paper hover:rotate-1" : "bg-accent text-ink hover:-rotate-1"
                 }`}
               >
                 <span className="font-display text-sm font-bold tabular-nums opacity-60">

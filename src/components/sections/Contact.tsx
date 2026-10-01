@@ -5,7 +5,7 @@ import { site } from "@/config/site";
 import { ContactForm } from "@/components/ContactForm";
 import { gsap, useGSAP, prefersReducedMotion } from "@/components/motion/gsap";
 
-/** Contacto: todo en lima, con un "HABLEMOS" gigante que se desliza con el scroll. */
+/** Contacto: todo en el color de acento, con un "HABLEMOS" gigante que se desliza con el scroll. */
 export function Contact() {
   const root = useRef<HTMLElement>(null);
   const { email, instagram, linkedin } = site.links;
@@ -32,7 +32,7 @@ export function Contact() {
   );
 
   return (
-    <section ref={root} id="contacto" aria-labelledby="contacto-title" className="overflow-hidden bg-lime text-ink">
+    <section ref={root} id="contacto" aria-labelledby="contacto-title" className="overflow-hidden bg-accent text-ink">
       <p
         data-big
         aria-hidden

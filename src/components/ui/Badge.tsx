@@ -1,12 +1,12 @@
 import { site } from "@/config/site";
 
 /** Sello circular con texto que gira y una flecha al centro que lleva al contacto. */
-export function Badge({ className = "" }: { className?: string }) {
+export function Badge({ className = "size-36" }: { className?: string }) {
   const text = `Disponible para proyectos • ${site.location} • `;
   return (
     <a
       href="#contacto"
-      className={`group relative flex size-36 items-center justify-center rounded-full ${className}`}
+      className={`group relative flex items-center justify-center rounded-full ${className}`}
       aria-label="Ir al contacto"
     >
       <svg viewBox="0 0 200 200" aria-hidden className="spin-slow absolute inset-0 size-full">
@@ -19,7 +19,7 @@ export function Badge({ className = "" }: { className?: string }) {
       </svg>
       <span
         aria-hidden
-        className="flex size-14 items-center justify-center rounded-full bg-lime text-2xl text-ink transition-transform duration-500 group-hover:rotate-45"
+        className="flex size-[38%] items-center justify-center rounded-full bg-accent text-4xl text-ink transition-transform duration-500 group-hover:rotate-45"
       >
         ↗
       </span>

@@ -28,7 +28,7 @@ export function Marquee() {
   return (
     <section aria-label="Lo que hago" className="relative z-10 overflow-hidden py-20">
       <Row reverse className="absolute inset-x-[-5%] top-1/2 -translate-y-1/2 rotate-3 border-y border-line bg-ink-soft text-paper/70" />
-      <Row className="relative -mx-[5%] -rotate-2 bg-lime text-ink" />
+      <Row className="relative -mx-[5%] -rotate-2 bg-accent text-ink" />
     </section>
   );
 }

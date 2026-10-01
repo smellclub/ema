@@ -19,7 +19,7 @@ export function Footer() {
               ["#contacto", "Contacto"],
             ].map(([href, label]) => (
               <li key={href}>
-                <a href={href} className="hover:text-lime">
+                <a href={href} className="hover:text-accent">
                   {label}
                 </a>
               </li>
@@ -35,7 +35,7 @@ export function Footer() {
                   href={key === "email" ? `mailto:${href}` : href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-lime"
+                  className="hover:text-accent"
                 >
                   {names[key] ?? key} ↗
                 </a>
@@ -46,7 +46,7 @@ export function Footer() {
         <div className="md:text-right">
           <p className="text-xs uppercase tracking-[0.3em] text-muted">Hora local</p>
           <LocalTime className="mt-4 block text-2xl text-muted" />
-          <a href="#inicio" className="mt-6 inline-block text-sm text-lime hover:underline">
+          <a href="#inicio" className="mt-6 inline-block text-sm text-accent hover:underline">
             Volver arriba ↑
           </a>
         </div>

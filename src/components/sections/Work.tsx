@@ -62,7 +62,7 @@ export function Work() {
         {/* Primer "panel": el título de la sección. */}
         <div className="shrink-0 lg:w-[34vw]">
           <p className="text-xs uppercase tracking-[0.3em] text-muted">
-            <span className="text-lime">01</span> — Trabajos
+            <span className="text-accent">01</span> — Trabajos
           </p>
           <h2 id="trabajos-title" className="mt-6 font-display text-7xl font-extrabold uppercase leading-[0.85] md:text-8xl lg:text-[8.5vw]">
             Lo que
@@ -72,7 +72,7 @@ export function Work() {
           <p className="mt-8 max-w-sm text-lg text-paper/70">
             Dos demos para mostrar lo que puedo hacer por un negocio, y la tienda de mi propia marca.
           </p>
-          <p aria-hidden className="mt-10 hidden font-hand text-2xl text-lime lg:block">
+          <p aria-hidden className="mt-10 hidden font-hand text-2xl text-accent lg:block">
             seguí scrolleando →
           </p>
         </div>
@@ -93,7 +93,7 @@ export function Work() {
               aria-label={`Abrir ${p.name} (se abre en otra pestaña)`}
             >
               {/* Marco tipo navegador. Al pasar el mouse, la captura recorre la web entera. */}
-              <div className="overflow-hidden rounded-xl border border-line bg-ink-soft shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] transition-colors duration-500 group-hover:border-lime/60">
+              <div className="overflow-hidden rounded-xl border border-line bg-ink-soft shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] transition-colors duration-500 group-hover:border-accent/60">
                 <div className="flex items-center gap-1.5 border-b border-line px-4 py-3">
                   <span className="size-2.5 rounded-full bg-line" />
                   <span className="size-2.5 rounded-full bg-line" />
@@ -138,7 +138,7 @@ export function Work() {
                 <p className="mt-3 flex items-center gap-3 text-sm text-paper/70">
                   {p.kind}
                   <span
-                    className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${p.tag === "Demo" ? "border border-paper/30" : "bg-lime text-ink"}`}
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${p.tag === "Demo" ? "border border-paper/30" : "bg-accent text-ink"}`}
                   >
                     {p.tag}
                   </span>

@@ -52,7 +52,7 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between gap-6 px-5 md:h-20 md:px-10">
         <a href="#inicio" className="font-display text-2xl font-extrabold uppercase tracking-tight">
           {site.name}
-          <sup className="ml-0.5 text-xs text-lime">©</sup>
+          <sup className="ml-0.5 text-xs text-accent">©</sup>
         </a>
 
         <nav aria-label="Principal" className="hidden md:block">
@@ -74,7 +74,7 @@ export function Header() {
           <LocalTime className="hidden text-xs uppercase tracking-widest text-muted lg:inline" />
           <a
             href="#contacto"
-            className="hidden rounded-full bg-lime px-5 py-2.5 text-sm font-semibold text-ink transition-transform hover:scale-105 md:inline-block"
+            className="hidden rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-ink transition-transform hover:scale-105 md:inline-block"
           >
             Hablemos
           </a>
@@ -83,7 +83,7 @@ export function Header() {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="menu-movil"
-            className="flex size-11 items-center justify-center rounded-full bg-lime text-ink md:hidden"
+            className="flex size-11 items-center justify-center rounded-full bg-accent text-ink md:hidden"
           >
             <span className="sr-only">{open ? "Cerrar menú" : "Abrir menú"}</span>
             <span aria-hidden className="relative block h-3 w-5">
@@ -98,7 +98,7 @@ export function Header() {
         <div
           ref={menu}
           id="menu-movil"
-          className="fixed inset-0 top-16 z-40 flex flex-col justify-between bg-lime px-5 pb-10 pt-8 text-ink md:hidden"
+          className="fixed inset-0 top-16 z-40 flex flex-col justify-between bg-accent px-5 pb-10 pt-8 text-ink md:hidden"
         >
           <ul className="space-y-1">
             {nav.map((item) => (

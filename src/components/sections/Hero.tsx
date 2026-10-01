@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { site } from "@/config/site";
-import { DotField } from "@/components/motion/DotField";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { onPreloaderDone } from "@/components/motion/Preloader";
 import { gsap, useGSAP, prefersReducedMotion } from "@/components/motion/gsap";
@@ -52,18 +51,17 @@ export function Hero() {
       aria-labelledby="hero-title"
       className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden px-5 pb-10 pt-28 md:px-10 md:pb-14"
     >
-      <DotField />
-      {/* Brillo lima abajo a la izquierda, muy sutil. */}
+      {/* Brillo del color de acento abajo a la izquierda, muy sutil. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-1/3 -left-1/4 -z-10 size-[80vw] rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--color-lime)_14%,transparent),transparent_60%)]"
+        className="pointer-events-none absolute -bottom-1/3 -left-1/4 -z-10 size-[80vw] rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--color-accent)_14%,transparent),transparent_60%)]"
       />
 
       <div className="mx-auto w-full max-w-[1600px]">
         <p data-fade className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-muted md:mb-8">
           <span className="relative flex size-2">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-lime opacity-75 motion-reduce:hidden" />
-            <span className="relative inline-flex size-2 rounded-full bg-lime" />
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-75 motion-reduce:hidden" />
+            <span className="relative inline-flex size-2 rounded-full bg-accent" />
           </span>
           {hero.kicker}
         </p>
@@ -78,12 +76,12 @@ export function Hero() {
               <span data-word className="relative inline-block">
                 {line === hero.highlight ? (
                   <>
-                    <span className="text-lime">{line}</span>
+                    <span className="text-accent">{line}</span>
                     <svg
                       aria-hidden
                       viewBox="0 0 400 40"
                       preserveAspectRatio="none"
-                      className="absolute -bottom-[0.06em] left-0 h-[0.14em] w-full overflow-visible text-lime"
+                      className="absolute -bottom-[0.06em] left-0 h-[0.14em] w-full overflow-visible text-accent"
                     >
                       <path
                         data-scribble
@@ -105,7 +103,7 @@ export function Hero() {
           ))}
         </h1>
 
-        <div className="mt-10 grid items-end gap-8 md:mt-14 md:grid-cols-[1fr_auto_auto] md:gap-12">
+        <div className="mt-10 grid items-end gap-8 md:mt-14 md:grid-cols-[1fr_auto] md:gap-12">
           <p data-fade className="max-w-md text-lg leading-relaxed text-paper/75 md:text-xl">
             {hero.intro}
           </p>
@@ -114,7 +112,7 @@ export function Hero() {
             <Magnetic>
               <a
                 href="#contacto"
-                className="inline-flex items-center gap-2 rounded-full bg-lime px-7 py-4 font-semibold text-ink"
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-4 font-semibold text-ink"
               >
                 Pedí tu demo <span aria-hidden>↗</span>
               </a>
@@ -127,9 +125,13 @@ export function Hero() {
             </a>
           </div>
 
-          <div data-fade className="hidden md:block">
-            <Badge />
-          </div>
+        </div>
+      </div>
+
+      {/* Sello grande a la derecha (en compu). */}
+      <div className="absolute right-10 top-1/2 hidden -translate-y-1/2 lg:block xl:right-20">
+        <div data-fade>
+          <Badge className="size-64 xl:size-72" />
         </div>
       </div>
 
@@ -137,7 +139,7 @@ export function Hero() {
       <p
         data-fade
         aria-hidden
-        className="absolute right-6 top-28 hidden rotate-[8deg] font-hand text-xl text-lime md:right-16 md:top-36 md:block md:text-3xl"
+        className="absolute right-6 top-28 hidden rotate-[8deg] font-hand text-xl text-accent md:right-16 md:top-36 md:block md:text-3xl"
       >
         sí, también la tuya ↓
       </p>

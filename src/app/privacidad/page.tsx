@@ -54,7 +54,7 @@ export default function PrivacidadPage() {
         {links.email ? (
           <>
             Escribime a{" "}
-            <a href={`mailto:${links.email}`} className="text-lime underline">
+            <a href={`mailto:${links.email}`} className="text-accent underline">
               {links.email}
             </a>
           </>
@@ -68,7 +68,7 @@ export default function PrivacidadPage() {
         Control de Datos Personales (URCDP), en{" "}
         <a
           href="https://www.gub.uy/unidad-reguladora-control-datos-personales/"
-          className="text-lime underline"
+          className="text-accent underline"
           rel="noopener noreferrer"
           target="_blank"
         >

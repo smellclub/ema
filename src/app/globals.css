@@ -1,16 +1,26 @@
 @import "tailwindcss";
 
 /*
- * Paleta: casi negro con un toque verde, crema de papel y un verde lima ácido
- * (el color que hace que la web se recuerde). Si querés cambiar el acento, es solo --color-lime.
+ * Paleta. Los colores viven en :root como variables para poder cambiarlos en un solo lugar.
+ * ink = fondo oscuro, paper = texto claro, accent = el color que hace que la web se recuerde.
  */
+:root {
+  /* Papaya: el naranja de McLaren, el equipo de Lando. */
+  --ink: #0e0d0c;
+  --ink-soft: #181614;
+  --line: #2b2723;
+  --paper: #f3eee6;
+  --muted: #978f86;
+  --accent: #ff6b1a;
+}
+
 @theme inline {
-  --color-ink: #0b0c09;
-  --color-ink-soft: #141612;
-  --color-line: #262922;
-  --color-paper: #f1f0e8;
-  --color-muted: #8d9086;
-  --color-lime: #d4ff3a;
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-paper: var(--paper);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
   --font-display: var(--font-bricolage);
   --font-sans: var(--font-geist);
   --font-hand: var(--font-marker);
@@ -26,12 +36,12 @@ body {
 }
 
 ::selection {
-  background: var(--color-lime);
+  background: var(--color-accent);
   color: var(--color-ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-lime);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 
@@ -63,9 +73,9 @@ html.lenis body {
   color: transparent;
   -webkit-text-stroke: 1.5px var(--color-paper);
 }
-.text-outline-lime {
+.text-outline-accent {
   color: transparent;
-  -webkit-text-stroke: 1.5px var(--color-lime);
+  -webkit-text-stroke: 1.5px var(--color-accent);
 }
 
 /* Marquesina infinita: el contenido está duplicado y se corre exactamente la mitad. */
