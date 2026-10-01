@@ -54,14 +54,14 @@ export function Footer() {
 
       <p
         aria-hidden
-        className="mt-16 select-none text-center font-display text-[42vw] font-extrabold uppercase leading-[0.72] tracking-[-0.01em] text-paper/[0.06] md:text-[36vw]"
+        className="mt-16 select-none whitespace-nowrap text-center font-display text-[14vw] font-extrabold uppercase leading-[0.8] tracking-[-0.01em] text-paper/[0.06]"
       >
         {site.name}
       </p>
 
       <div className="relative mx-auto flex max-w-[1600px] flex-col gap-3 border-t border-line px-5 py-6 text-xs text-muted md:flex-row md:justify-between md:px-10">
         <p>
-          © {new Date().getFullYear()} {site.name} · Diseñado y programado por mí, con ayuda de IA.
+          © {new Date().getFullYear()} {site.name} · Diseñado y programado por mí.
         </p>
         <p className="flex gap-5">
           <Link href="/privacidad" className="hover:text-paper">

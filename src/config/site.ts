@@ -28,9 +28,9 @@ export type Service = {
 };
 
 export const site = {
-  name: "Ema",
+  name: "Emanuel Yordi",
   /** Nombre que va en la pestaña y en Google. */
-  title: "Ema · Diseño y desarrollo web",
+  title: "Emanuel Yordi · Diseño y desarrollo web",
   role: "Diseño y desarrollo web",
   location: "Uruguay",
   timeZone: "America/Montevideo",
@@ -50,7 +50,7 @@ export const site = {
   availability: "Agenda abierta para proyectos nuevos",
 
   manifesto:
-    "Tengo mi propio emprendimiento, así que sé lo que es necesitar clientes. Por eso no hago webs para que queden lindas en un portfolio: las hago para que la gente reserve, compre o te escriba. Uso inteligencia artificial para trabajar más rápido y le pongo criterio para que el resultado no parezca hecho con plantilla.",
+    "Tengo mi propio emprendimiento, así que sé lo que es necesitar clientes. Por eso no hago webs para que queden lindas en un portfolio: las hago para que la gente reserve, compre o te escriba. Me ocupo de todo, del diseño a los textos y la programación, para que el resultado no parezca hecho con plantilla.",
 
   marquee: ["Landing pages", "Reservas online", "SEO local", "Webs rápidas", "Diseño a medida", "Tiendas online"],
 
@@ -157,9 +157,9 @@ export const site = {
       text: "Me encanta entender por qué una marca te convence y otra no.",
     },
     {
-      id: "ia",
-      title: "IA",
-      text: "Uso Claude Code para construir más rápido y aprender todos los días.",
+      id: "negocios",
+      title: "Negocios",
+      text: "Leo y miro todo lo que puedo sobre emprendimientos y cómo crecen.",
     },
   ],
 

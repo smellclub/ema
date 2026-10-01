@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { site } from "@/config/site";
 import { gsap, useGSAP, prefersReducedMotion } from "./gsap";
 
 const DONE_EVENT = "preloader:done";
@@ -49,7 +50,7 @@ export function Preloader() {
       const num = root.current!.querySelector<HTMLElement>("[data-count]")!;
       gsap
         .timeline({ onComplete: () => setGone(true) })
-        .from("[data-letter]", { yPercent: 110, stagger: 0.06, duration: 0.7, ease: "power4.out" })
+        .from("[data-letter]", { yPercent: 110, stagger: 0.03, duration: 0.7, ease: "power4.out" })
         .to(counter, {
           v: 100,
           duration: 1.3,
@@ -59,7 +60,7 @@ export function Preloader() {
           },
         }, 0)
         .to("[data-bar]", { scaleX: 1, duration: 1.3, ease: "power2.inOut" }, 0)
-        .to("[data-letter]", { yPercent: -110, stagger: 0.04, duration: 0.5, ease: "power3.in" })
+        .to("[data-letter]", { yPercent: -110, stagger: 0.02, duration: 0.5, ease: "power3.in" })
         .to(root.current, { yPercent: -100, duration: 0.9, ease: "expo.inOut" }, "-=0.15")
         .to(curtain.current, { yPercent: -100, duration: 0.9, ease: "expo.inOut" }, "-=0.78")
         .call(finish, [], "-=0.55");
@@ -78,9 +79,9 @@ export function Preloader() {
       >
         <span className="text-xs uppercase tracking-[0.3em] text-muted">Cargando portfolio</span>
         <div className="flex items-end justify-between">
-          <div className="flex overflow-hidden font-display text-[28vw] font-extrabold uppercase leading-[0.8] md:text-[18vw]">
-            {"EMA".split("").map((l) => (
-              <span key={l} data-letter className="inline-block">
+          <div className="flex flex-wrap overflow-hidden font-display text-[17vw] font-extrabold uppercase leading-[0.85] md:text-[10vw]">
+            {site.name.split("").map((l, i) => (
+              <span key={i} data-letter className="inline-block whitespace-pre">
                 {l}
               </span>
             ))}

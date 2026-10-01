@@ -17,22 +17,22 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 70,
-          background: "#111111",
-          color: "#efebe4",
+          background: "#070b16",
+          color: "#eef1f7",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 26, letterSpacing: 6, textTransform: "uppercase", color: "#9a958e" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 26, letterSpacing: 6, textTransform: "uppercase", color: "#8a93a8" }}>
           <span>{site.role}</span>
           <span>{site.location}</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", fontSize: 150, fontWeight: 800, lineHeight: 0.9, textTransform: "uppercase", letterSpacing: -4 }}>
           <span>Webs que</span>
           <span>
-            hacen <span style={{ color: "#ff3d2e", marginLeft: 30 }}>vender.</span>
+            hacen <span style={{ color: "#4d82ff", marginLeft: 30 }}>vender.</span>
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 20, fontSize: 34 }}>
-          <div style={{ width: 22, height: 22, borderRadius: 11, background: "#ff3d2e" }} />
+          <div style={{ width: 22, height: 22, borderRadius: 11, background: "#4d82ff" }} />
           {site.name} · {site.availability}
         </div>
       </div>

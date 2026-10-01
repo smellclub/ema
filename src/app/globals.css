@@ -5,13 +5,14 @@
  * ink = fondo oscuro, paper = texto claro, accent = el color que hace que la web se recuerde.
  */
 :root {
-  /* Rojo carrera: negro con rojo intenso, como un auto de F1. */
-  --ink: #111111;
-  --ink-soft: #1a1a1a;
-  --line: #2d2d2d;
-  --paper: #efebe4;
-  --muted: #9a958e;
-  --accent: #ff3d2e;
+  /* Azul eléctrico. (Rojo carrera era: ink #111111, ink-soft #1a1a1a, line #2d2d2d,
+     paper #efebe4, muted #9a958e, accent #ff3d2e.) */
+  --ink: #070b16;
+  --ink-soft: #0e1424;
+  --line: #1f2842;
+  --paper: #eef1f7;
+  --muted: #8a93a8;
+  --accent: #4d82ff;
 }
 
 @theme inline {
