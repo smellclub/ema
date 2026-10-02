@@ -152,6 +152,18 @@ export function Hero() {
             <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />
           </button>
           <p className="mt-3 text-center text-sm text-muted">Te la muestro antes de que pagues nada.</p>
+          {/* "Demo gratis" va pegado en la esquina del panel: arriba en celular, abajo en compu. */}
+          <span data-wrap aria-hidden className="absolute -right-3 -top-12 w-24 sm:w-28 lg:-bottom-14 lg:-right-12 lg:top-auto lg:w-36">
+            <span data-in="pop" className="block">
+              <span data-drag data-cursor="Despegá" className="block cursor-grab touch-none">
+                <BurstSticker className="w-full text-base sm:text-lg lg:text-xl">
+                  Demo
+                  <br />
+                  gratis
+                </BurstSticker>
+              </span>
+            </span>
+          </span>
         </form>
       </div>
 
@@ -166,18 +178,6 @@ export function Hero() {
                   <path d="M20 3v5M20 32v5M3 20h5M32 20h5M8 8l3.5 3.5M28.5 28.5 32 32M32 8l-3.5 3.5M11.5 28.5 8 32" />
                 </svg>
               </RoundSticker>
-            </span>
-          </span>
-        </span>
-
-        <span data-wrap className="absolute bottom-[2%] right-[2%] w-28 sm:w-36 lg:bottom-[9%] lg:right-[2.5%] lg:w-40">
-          <span data-in="pop" className="block">
-            <span data-drag data-cursor="Despegá" className="pointer-events-auto block cursor-grab touch-none">
-              <BurstSticker className="w-full text-xl">
-                Demo
-                <br />
-                gratis
-              </BurstSticker>
             </span>
           </span>
         </span>
