@@ -1,46 +1,70 @@
+"use client";
+
+import { useRef } from "react";
 import { site } from "@/config/site";
-import { SectionLabel } from "@/components/ui/SectionLabel";
+import { useGSAP, prefersReducedMotion, slapIn } from "@/components/motion/gsap";
+import { requestDemo } from "@/lib/demo-bus";
+import { Icon } from "@/components/ui/Icon";
 
-/**
- * Servicios como filas grandes. Al pasar el mouse, el fondo de color sube desde abajo
- * (es un clip-path animado con CSS, sin JS). En celular se ve todo siempre.
- */
+// Cada servicio es una etiqueta distinta: no todas iguales, como en una plancha real.
+const look = [
+  { tilt: "-rotate-2", place: "lg:col-span-7" },
+  { tilt: "rotate-[2.5deg]", place: "lg:col-span-5 lg:mt-16" },
+  { tilt: "rotate-1", place: "lg:col-span-5 lg:-mt-6" },
+  { tilt: "-rotate-[2.5deg]", place: "lg:col-span-7 lg:mt-10" },
+];
+
+/** Servicios: una plancha azul entera con etiquetas blancas. "Quiero esto" completa el formulario. */
 export function Services() {
-  return (
-    <section id="servicios" aria-labelledby="servicios-title" className="bg-ink">
-      <div className="mx-auto max-w-[1600px] px-5 py-28 md:px-10 md:py-40">
-        <SectionLabel index="03" label="Servicios" />
-        <h2 id="servicios-title" className="mt-6 max-w-4xl font-display text-6xl font-extrabold uppercase leading-[0.85] md:text-8xl">
-          Qué puedo hacer <span className="text-accent">por vos</span>
-        </h2>
+  const root = useRef<HTMLElement>(null);
 
-        <ul className="mt-16 border-t border-line md:mt-24">
+  useGSAP(
+    () => {
+      if (prefersReducedMotion()) return;
+      slapIn("[data-service]", "[data-services]", { stagger: 0.12, start: "top 75%" });
+    },
+    { scope: root },
+  );
+
+  return (
+    <section ref={root} id="servicios" aria-labelledby="servicios-title" className="bg-accent text-white">
+      <div className="mx-auto max-w-[1600px] px-5 py-28 md:px-10 md:py-40">
+        <div className="flex flex-wrap items-end justify-between gap-8">
+          <h2 id="servicios-title" className="max-w-4xl font-display text-[clamp(3rem,10vw,6rem)] uppercase leading-[1.05]">
+            Qué puedo hacer{" "}
+            <span className="sticker sticker-white -rotate-2 whitespace-nowrap px-[0.2em] pt-[0.08em] text-accent">por vos</span>
+          </h2>
+          <p className="max-w-sm text-lg leading-relaxed text-white/85">
+            Elegí lo que te sirve y te paso un presupuesto cerrado. Sin letra chica.
+          </p>
+        </div>
+
+        <ul data-services className="mt-20 grid gap-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-x-12 lg:gap-y-8">
           {site.services.map((s, i) => (
-            <li key={s.id} className="group relative isolate overflow-hidden border-b border-line">
-              <div
-                aria-hidden
-                className="absolute inset-0 -z-10 bg-accent transition-[clip-path] duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] [clip-path:inset(100%_0_0_0)] group-hover:[clip-path:inset(0_0_0_0)]"
-              />
-              <div className="grid gap-4 py-8 transition-colors duration-300 group-hover:text-ink md:grid-cols-[5rem_1.2fr_1fr_auto] md:items-center md:gap-8 md:px-4 md:py-10">
-                <span className="font-display text-sm font-bold tabular-nums text-muted transition-colors group-hover:text-ink/60">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="font-display text-4xl font-extrabold uppercase leading-none md:text-6xl">{s.name}</h3>
-                <div>
-                  <p className="text-paper/75 transition-colors group-hover:text-ink">{s.description}</p>
-                  <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted transition-colors group-hover:text-ink/70">
+            <li key={s.id} className={look[i % look.length].place}>
+              <div data-service>
+                <div
+                  className={`sticker sticker-white flex h-full flex-col p-7 text-ink transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:rotate-0 md:p-9 ${look[i % look.length].tilt}`}
+                >
+                  <h3 className="font-display text-4xl uppercase leading-none md:text-5xl">{s.name}</h3>
+                  <p className="mt-4 max-w-[40ch] text-lg leading-relaxed text-ink/75">{s.description}</p>
+                  <ul className="mt-6 flex flex-wrap gap-2">
                     {s.includes.map((inc) => (
-                      <li key={inc}>+ {inc}</li>
+                      <li key={inc} className="inline-flex items-center gap-1.5 rounded-full bg-paper-soft px-3 py-1.5 text-sm font-medium">
+                        <Icon name="check" className="size-4 text-accent" />
+                        {inc}
+                      </li>
                     ))}
                   </ul>
+                  <button
+                    type="button"
+                    onClick={() => requestDemo({ service: s.id })}
+                    className="group mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-white transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-accent-deep"
+                  >
+                    Quiero esto
+                    <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />
+                  </button>
                 </div>
-                <a
-                  href="#contacto"
-                  className="hidden size-14 items-center justify-center rounded-full border border-current text-xl transition-transform duration-500 group-hover:rotate-45 md:flex"
-                  aria-label={`Consultar por ${s.name}`}
-                >
-                  ↗
-                </a>
               </div>
             </li>
           ))}

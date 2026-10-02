@@ -1,148 +1,211 @@
 "use client";
 
-import { useRef } from "react";
+import { useId, useRef, useState } from "react";
 import { site } from "@/config/site";
-import { Magnetic } from "@/components/motion/Magnetic";
 import { onPreloaderDone } from "@/components/motion/Preloader";
 import { gsap, useGSAP, prefersReducedMotion } from "@/components/motion/gsap";
-import { Badge } from "@/components/ui/Badge";
+import { useStickers } from "@/components/motion/useStickers";
+import { requestDemo } from "@/lib/demo-bus";
+import { Icon } from "@/components/ui/Icon";
+import { BallSticker, BurstSticker, RoundSticker } from "@/components/ui/Stickers";
 
+// Cada renglón del título es un vinilo distinto, con su propia inclinación.
+const lineStyle = [
+  { vinyl: "sticker-ink", tilt: "-rotate-2", indent: "" },
+  { vinyl: "sticker-white", tilt: "rotate-[1.5deg]", indent: "ml-[0.5em]" },
+  { vinyl: "sticker-blue", tilt: "-rotate-[4deg]", indent: "ml-[0.15em]" },
+];
+
+/**
+ * Portada: la web es una plancha de stickers.
+ * - El título son tres stickers que se despegan y se arrastran (en compu).
+ * - A la derecha, escribís el nombre de tu negocio y se convierte en sticker en vivo:
+ *   es la demo con tu marca que ofrezco, en chiquito. El botón te lleva al formulario ya completado.
+ */
 export function Hero() {
   const root = useRef<HTMLElement>(null);
+  const [business, setBusiness] = useState("");
+  const inputId = useId();
   const { hero } = site;
+
+  // Los renglones grandes solo se arrastran con mouse (en celular trabarían el scroll).
+  const big = useStickers(root, { media: "(min-width: 1024px) and (pointer: fine)", selector: "[data-drag-big]" });
+  const small = useStickers(root, { selector: "[data-drag]" });
 
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-
-      // Estado inicial: todo escondido hasta que termine la pantalla de carga.
-      gsap.set("[data-word]", { yPercent: 115 });
-      gsap.set("[data-fade]", { autoAlpha: 0, y: 24 });
-      gsap.set("[data-scribble]", { strokeDashoffset: 1 });
-
-      // Esta función la llama la pantalla de carga, así que buscamos los elementos
-      // con q() (dentro del hero) y no con un selector suelto.
       const q = gsap.utils.selector(root);
+      gsap.set(q("[data-in]"), { autoAlpha: 0 });
       const off = onPreloaderDone(() => {
         gsap
-          .timeline()
-          .to(q("[data-word]"), { yPercent: 0, stagger: 0.09, duration: 1.1, ease: "power4.out" })
-          .to(q("[data-scribble]"), { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" }, "-=0.4")
-          .to(q("[data-fade]"), { autoAlpha: 1, y: 0, stagger: 0.08, duration: 0.8, ease: "power3.out" }, "-=0.9");
-      });
-
-      // Al bajar, el título sube más lento que la página (parallax) y se achica un poco.
-      gsap.to("[data-headline]", {
-        yPercent: -18,
-        scale: 0.94,
-        transformOrigin: "left bottom",
-        ease: "none",
-        scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
+          .timeline({ defaults: { ease: "back.out(2.4)" } })
+          .fromTo(
+            q("[data-in='line']"),
+            { autoAlpha: 0, scale: 1.5, rotate: (i: number) => (i % 2 ? 10 : -10) },
+            { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.55, stagger: 0.14 },
+          )
+          .fromTo(q("[data-in='rise']"), { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.08 }, "-=0.2")
+          .fromTo(
+            q("[data-in='pop']"),
+            { autoAlpha: 0, scale: 0.2, rotate: -40 },
+            { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.6, stagger: 0.09 },
+            "-=0.5",
+          );
       });
       return off;
     },
     { scope: root },
   );
 
+  const name = business.trim() || "Tu negocio";
+  // Cuanto más largo el nombre, más chica la letra, para que siempre entre en el sticker.
+  const fontSize = `${Math.max(1.5, Math.min(3.4, 26 / Math.max(name.length, 7))).toFixed(2)}rem`;
+
   return (
     <section
       ref={root}
       id="inicio"
       aria-labelledby="hero-title"
-      className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden px-5 pb-10 pt-28 md:px-10 md:pb-14"
+      className="relative isolate overflow-hidden px-5 pb-20 pt-28 md:px-10 md:pt-32 lg:flex lg:min-h-svh lg:items-center lg:pb-16"
     >
-      {/* Brillo del color de acento abajo a la izquierda, muy sutil. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-1/3 -left-1/4 -z-10 size-[80vw] rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--color-accent)_14%,transparent),transparent_60%)]"
-      />
-
-      <div className="mx-auto w-full max-w-[1600px]">
-        <p data-fade className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-muted md:mb-8">
-          <span className="relative flex size-2">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-75 motion-reduce:hidden" />
-            <span className="relative inline-flex size-2 rounded-full bg-accent" />
-          </span>
-          {hero.kicker}
-        </p>
-
-        <h1
-          id="hero-title"
-          data-headline
-          className="font-display text-[19vw] font-extrabold uppercase leading-[0.82] tracking-[-0.02em] md:text-[13.5vw] 2xl:text-[13rem]"
-        >
-          {hero.lines.map((line) => (
-            <span key={line} className="block overflow-hidden pb-[0.04em]">
-              <span data-word className="relative inline-block">
-                {line === hero.highlight ? (
-                  <>
-                    <span className="text-accent">{line}</span>
-                    <svg
-                      aria-hidden
-                      viewBox="0 0 400 40"
-                      preserveAspectRatio="none"
-                      className="absolute -bottom-[0.06em] left-0 h-[0.14em] w-full overflow-visible text-accent"
-                    >
-                      <path
-                        data-scribble
-                        pathLength={1}
-                        d="M4 28 C 80 8, 160 6, 230 18 S 350 34, 396 10"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="7"
-                        strokeLinecap="round"
-                        strokeDasharray="1"
-                      />
-                    </svg>
-                  </>
-                ) : (
-                  line
-                )}
+      <div className="mx-auto grid w-full max-w-[1600px] items-center gap-14 lg:grid-cols-[1.25fr_1fr] lg:gap-10">
+        <div>
+          <h1
+            id="hero-title"
+            className="font-display text-[clamp(3.1rem,14.5vw,5.5rem)] uppercase leading-none sm:text-[clamp(4rem,11vw,7rem)] lg:text-[clamp(4.5rem,7.2vw,7.5rem)]"
+          >
+            {hero.lines.map((line, i) => (
+              <span key={line} data-wrap className={`relative mt-[0.2em] block w-fit first:mt-0 ${lineStyle[i].indent}`}>
+                <span data-slot aria-hidden className="kiss-cut invisible absolute inset-0 opacity-0" />
+                <span data-in="line" className="block">
+                  <span
+                    data-drag-big
+                    data-cursor="Despegá"
+                    className={`sticker ${lineStyle[i].vinyl} ${lineStyle[i].tilt} touch-manipulation select-none px-[0.22em] pb-[0.06em] pt-[0.14em] lg:cursor-grab`}
+                  >
+                    {line}
+                  </span>
+                </span>
               </span>
-            </span>
-          ))}
-        </h1>
+            ))}
+          </h1>
 
-        <div className="mt-10 grid items-end gap-8 md:mt-14 md:grid-cols-[1fr_auto] md:gap-12">
-          <p data-fade className="max-w-md text-lg leading-relaxed text-paper/75 md:text-xl">
+          <p data-in="rise" className="mt-10 max-w-md text-lg leading-relaxed text-muted md:text-xl">
             {hero.intro}
           </p>
 
-          <div data-fade className="flex flex-wrap items-center gap-3">
-            <Magnetic>
-              <a
-                href="#contacto"
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-4 font-semibold text-ink"
-              >
-                Pedí tu demo <span aria-hidden>↗</span>
-              </a>
-            </Magnetic>
-            <a
-              href="#trabajos"
-              className="inline-flex items-center gap-2 rounded-full border border-paper/25 px-7 py-4 font-semibold transition-colors hover:border-paper hover:bg-paper hover:text-ink"
-            >
-              Ver trabajos
+          <div data-in="rise" className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <a href="#trabajos" className="group inline-flex items-center gap-2 text-lg font-semibold underline decoration-accent decoration-2 underline-offset-[6px] hover:decoration-4">
+              Ver mis trabajos
+              <Icon name="arrow-down" className="size-5 transition-transform group-hover:translate-y-1" />
             </a>
+            <button
+              type="button"
+              onClick={() => {
+                big.reset();
+                small.reset();
+              }}
+              className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-muted transition-colors hover:bg-paper-soft hover:text-ink [@media(pointer:fine)]:inline-flex"
+            >
+              <Icon name="reset" className="size-4" />
+              Volver a pegar los stickers
+            </button>
+          </div>
+        </div>
+
+        {/* El generador de stickers: la demo con tu marca, en chiquito. */}
+        <form
+          data-in="rise"
+          onSubmit={(e) => {
+            e.preventDefault();
+            requestDemo({ business: business.trim() });
+          }}
+          className="relative mx-auto w-full max-w-lg rounded-[2rem] bg-paper-soft p-6 sm:p-8"
+        >
+          <div className="kiss-cut grid min-h-56 place-items-center rounded-[1.4rem] bg-paper px-6 py-10 sm:min-h-64">
+            <div aria-live="polite" className="sticker sticker-blue max-w-full rotate-[3deg] px-6 pb-4 pt-5 text-center">
+              <p className="break-words font-display leading-[1.05]" style={{ fontSize }}>
+                {name}
+              </p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80">Web nueva · demo gratis</p>
+            </div>
           </div>
 
-        </div>
+          <label htmlFor={inputId} className="mt-6 block text-base font-semibold">
+            ¿Cómo se llama tu negocio?
+          </label>
+          <input
+            id={inputId}
+            value={business}
+            onChange={(e) => setBusiness(e.target.value.slice(0, 40))}
+            maxLength={40}
+            autoComplete="organization"
+            placeholder="Ej: Peluquería Sol"
+            className="field"
+          />
+          <button
+            type="submit"
+            className="group mt-4 inline-flex w-full items-center justify-center gap-3 rounded-full bg-accent px-7 py-4 text-lg font-semibold text-white shadow-[0_12px_24px_-10px_rgb(31_59_255/0.7)] transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-accent-deep active:translate-y-0"
+          >
+            Quiero mi demo
+            <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />
+          </button>
+          <p className="mt-3 text-center text-sm text-muted">Te la muestro antes de que pagues nada.</p>
+        </form>
       </div>
 
-      {/* Sello grande a la derecha (en compu). */}
-      <div className="absolute right-10 top-1/2 hidden -translate-y-1/2 lg:block xl:right-20">
-        <div data-fade>
-          <Badge className="size-64 xl:size-72" />
-        </div>
-      </div>
+      {/* Stickers sueltos. Se arrastran con mouse o con el dedo. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-0">
+        <span data-wrap className="absolute right-[5%] top-[11.5rem] w-24 sm:right-[8%] sm:top-[9rem] sm:w-28 lg:right-[44%] lg:top-[16%] lg:w-32">
+          <span data-in="pop" className="block">
+            <span data-drag data-cursor="Despegá" className="pointer-events-auto block cursor-grab touch-none">
+              <RoundSticker text="HECHO EN URUGUAY • HECHO EN URUGUAY • " className="w-full">
+                <svg viewBox="0 0 40 40" className="size-9 sm:size-11" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                  <circle cx="20" cy="20" r="7" fill="currentColor" />
+                  <path d="M20 3v5M20 32v5M3 20h5M32 20h5M8 8l3.5 3.5M28.5 28.5 32 32M32 8l-3.5 3.5M11.5 28.5 8 32" />
+                </svg>
+              </RoundSticker>
+            </span>
+          </span>
+        </span>
 
-      {/* Nota "a mano", como las de un cuaderno. */}
-      <p
-        data-fade
-        aria-hidden
-        className="absolute right-6 top-28 hidden rotate-[8deg] font-hand text-xl text-accent md:right-16 md:top-36 md:block md:text-3xl"
-      >
-        sí, también la tuya ↓
-      </p>
+        <span data-wrap className="absolute bottom-[3%] right-[3%] hidden w-36 sm:block lg:bottom-[9%] lg:right-[2.5%] lg:w-40">
+          <span data-in="pop" className="block">
+            <span data-drag data-cursor="Despegá" className="pointer-events-auto block cursor-grab touch-none">
+              <BurstSticker className="w-full text-xl">
+                Demo
+                <br />
+                gratis
+              </BurstSticker>
+            </span>
+          </span>
+        </span>
+
+        <span data-wrap className="absolute left-[54%] top-[11%] hidden lg:block">
+          <span data-in="pop" className="block">
+            <span data-drag data-cursor="Despegá" className="sticker sticker-ink pointer-events-auto block -rotate-6 cursor-grab touch-none px-4 py-2 text-base font-semibold">
+              Rápida en el celu
+            </span>
+          </span>
+        </span>
+
+        <span data-wrap className="absolute bottom-[12%] left-[38%] hidden w-20 xl:block">
+          <span data-in="pop" className="block">
+            <span data-drag data-cursor="Despegá" className="pointer-events-auto block cursor-grab touch-none">
+              <BallSticker className="w-full" />
+            </span>
+          </span>
+        </span>
+
+        <span data-wrap className="absolute right-[4%] top-[18%] hidden lg:block">
+          <span data-in="pop" className="block">
+            <span data-drag data-cursor="Despegá" className="sticker sticker-white pointer-events-auto block rotate-3 cursor-grab touch-none px-4 py-2 text-base font-semibold">
+              Cero plantillas
+            </span>
+          </span>
+        </span>
+      </div>
     </section>
   );
 }

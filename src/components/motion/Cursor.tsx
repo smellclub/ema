@@ -18,11 +18,18 @@ export function Cursor() {
     if (!finePointer || prefersReducedMotion() || !dot.current) return;
     const el = dot.current;
     el.hidden = false;
-    gsap.set(el, { xPercent: -50, yPercent: -50 });
+    // Invisible hasta que el mouse se mueve por primera vez (si no, aparece clavado arriba a la izquierda).
+    gsap.set(el, { xPercent: -50, yPercent: -50, opacity: 0 });
     const xTo = gsap.quickTo(el, "x", { duration: 0.35, ease: "power3" });
     const yTo = gsap.quickTo(el, "y", { duration: 0.35, ease: "power3" });
 
+    let shown = false;
     const move = (e: PointerEvent) => {
+      if (!shown) {
+        shown = true;
+        gsap.set(el, { x: e.clientX, y: e.clientY });
+        gsap.to(el, { opacity: 1, duration: 0.2 });
+      }
       xTo(e.clientX);
       yTo(e.clientY);
     };
@@ -55,9 +62,9 @@ export function Cursor() {
       ref={dot}
       hidden
       aria-hidden
-      className={`pointer-events-none fixed left-0 top-0 z-[95] size-3.5 [&:not([hidden])]:flex items-center justify-center rounded-full bg-accent ${label ? "" : "mix-blend-difference"}`}
+      className={`pointer-events-none fixed left-0 top-0 z-[95] size-3.5 [&:not([hidden])]:flex items-center justify-center rounded-full bg-accent shadow-[0_0_0_2px_#fff,0_8px_18px_-8px_rgb(13_15_26/0.45)]`}
     >
-      {label && <span className="text-xs font-semibold uppercase tracking-widest text-ink">{label}</span>}
+      {label && <span className="text-xs font-bold uppercase tracking-wider text-white">{label}</span>}
     </div>
   );
 }

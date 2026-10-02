@@ -39,10 +39,8 @@ export const site = {
     "Hago webs rápidas, con reservas online y bien posicionadas en Google para negocios de Uruguay. Mirá mis trabajos y pedí tu demo.",
 
   hero: {
-    kicker: "Webs para negocios · Hechas en Uruguay",
-    // La línea grande se arma con estas palabras. La marcada lleva el garabato.
+    // Cada renglón del título es un sticker que se puede arrastrar.
     lines: ["Webs que", "hacen", "vender."],
-    highlight: "vender.",
     intro:
       "Diseño y programo webs para negocios que quieren verse grandes en internet: rápidas, lindas en el celular y pensadas para que te escriban.",
   },
@@ -85,6 +83,22 @@ export const site = {
         mobile: "/trabajos/basalto-mob.jpg",
         full: "/trabajos/basalto-full.jpg",
         fullHeight: 13801,
+      },
+    },
+    {
+      id: "voltio",
+      name: "VOLTIO",
+      kind: "Gimnasio",
+      tag: "Demo",
+      year: "2026",
+      url: "https://voltio-smellclub.vercel.app",
+      summary:
+        "Web para un gimnasio con horario semanal filtrable, planes con precio mensual, trimestral o anual, y una clase de prueba que se reserva sola desde cualquier botón.",
+      features: ["Clase de prueba online", "Horarios con filtros", "Planes y precios", "Animaciones"],
+      images: {
+        mobile: "/trabajos/voltio-mob.jpg",
+        full: "/trabajos/voltio-full.jpg",
+        fullHeight: 11331,
       },
     },
     {
@@ -178,7 +192,7 @@ export const site = {
     },
     {
       q: "¿Las webs de demo son de clientes reales?",
-      a: "No. Black Line y Basalto son negocios inventados que armé para mostrar lo que puedo hacer. Smell Club sí es real: es mi emprendimiento.",
+      a: "No. Black Line, Basalto y VOLTIO son negocios inventados que armé para mostrar lo que puedo hacer. Smell Club sí es real: es mi emprendimiento.",
     },
   ],
 
