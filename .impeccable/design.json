@@ -1,0 +1,484 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-02T17:09:02+00:00",
+  "title": "Design System: Emanuel Yordi",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Backing Paper",
+        "tonalRamp": [
+          "oklch(15% 0.005 275)",
+          "oklch(25% 0.007 275)",
+          "oklch(35% 0.010 275)",
+          "oklch(45% 0.010 275)",
+          "oklch(55% 0.010 275)",
+          "oklch(65% 0.010 275)",
+          "oklch(80% 0.007 275)",
+          "oklch(95% 0.005 275)"
+        ]
+      },
+      "paper-soft": {
+        "role": "neutral",
+        "displayName": "Tinted Paper",
+        "tonalRamp": [
+          "oklch(15% 0.005 275)",
+          "oklch(25% 0.009 275)",
+          "oklch(35% 0.012 275)",
+          "oklch(45% 0.012 275)",
+          "oklch(55% 0.012 275)",
+          "oklch(65% 0.012 275)",
+          "oklch(80% 0.009 275)",
+          "oklch(95% 0.005 275)"
+        ]
+      },
+      "ink": {
+        "role": "secondary",
+        "displayName": "Black Vinyl",
+        "tonalRamp": [
+          "oklch(15% 0.013 275)",
+          "oklch(25% 0.022 275)",
+          "oklch(35% 0.030 275)",
+          "oklch(45% 0.030 275)",
+          "oklch(55% 0.030 275)",
+          "oklch(65% 0.030 275)",
+          "oklch(80% 0.022 275)",
+          "oklch(95% 0.013 275)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Pencil Grey",
+        "tonalRamp": [
+          "oklch(15% 0.016 275)",
+          "oklch(25% 0.026 275)",
+          "oklch(35% 0.035 275)",
+          "oklch(45% 0.035 275)",
+          "oklch(55% 0.035 275)",
+          "oklch(65% 0.035 275)",
+          "oklch(80% 0.026 275)",
+          "oklch(95% 0.016 275)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Die-Cut Grey",
+        "tonalRamp": [
+          "oklch(15% 0.011 275)",
+          "oklch(25% 0.019 275)",
+          "oklch(35% 0.025 275)",
+          "oklch(45% 0.025 275)",
+          "oklch(55% 0.025 275)",
+          "oklch(65% 0.025 275)",
+          "oklch(80% 0.019 275)",
+          "oklch(95% 0.011 275)"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Pressed Die-Cut",
+        "tonalRamp": [
+          "oklch(15% 0.018 275)",
+          "oklch(25% 0.030 275)",
+          "oklch(35% 0.040 275)",
+          "oklch(45% 0.040 275)",
+          "oklch(55% 0.040 275)",
+          "oklch(65% 0.040 275)",
+          "oklch(80% 0.030 275)",
+          "oklch(95% 0.018 275)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Electric Blue Vinyl",
+        "tonalRamp": [
+          "oklch(15% 0.117 266)",
+          "oklch(25% 0.195 266)",
+          "oklch(35% 0.260 266)",
+          "oklch(45% 0.260 266)",
+          "oklch(55% 0.260 266)",
+          "oklch(65% 0.260 266)",
+          "oklch(80% 0.195 266)",
+          "oklch(95% 0.117 266)"
+        ]
+      },
+      "accent-deep": {
+        "role": "primary",
+        "displayName": "Pressed Blue",
+        "tonalRamp": [
+          "oklch(15% 0.108 266)",
+          "oklch(25% 0.180 266)",
+          "oklch(35% 0.240 266)",
+          "oklch(45% 0.240 266)",
+          "oklch(55% 0.240 266)",
+          "oklch(65% 0.240 266)",
+          "oklch(80% 0.180 266)",
+          "oklch(95% 0.108 266)"
+        ]
+      },
+      "accent-on-ink": {
+        "role": "secondary",
+        "displayName": "Blue on Black",
+        "tonalRamp": [
+          "oklch(15% 0.063 270)",
+          "oklch(25% 0.105 270)",
+          "oklch(35% 0.140 270)",
+          "oklch(45% 0.140 270)",
+          "oklch(55% 0.140 270)",
+          "oklch(65% 0.140 270)",
+          "oklch(80% 0.105 270)",
+          "oklch(95% 0.063 270)"
+        ]
+      },
+      "on-accent": {
+        "role": "neutral",
+        "displayName": "White on Vinyl",
+        "tonalRamp": [
+          "oklch(15% 0.005 275)",
+          "oklch(25% 0.007 275)",
+          "oklch(35% 0.010 275)",
+          "oklch(45% 0.010 275)",
+          "oklch(55% 0.010 275)",
+          "oklch(65% 0.010 275)",
+          "oklch(80% 0.007 275)",
+          "oklch(95% 0.005 275)"
+        ]
+      },
+      "error": {
+        "role": "functional",
+        "displayName": "Error Red",
+        "tonalRamp": [
+          "oklch(15% 0.090 20)",
+          "oklch(25% 0.150 20)",
+          "oklch(35% 0.200 20)",
+          "oklch(45% 0.200 20)",
+          "oklch(55% 0.200 20)",
+          "oklch(65% 0.200 20)",
+          "oklch(80% 0.150 20)",
+          "oklch(95% 0.090 20)"
+        ]
+      },
+      "error-ink": {
+        "role": "functional",
+        "displayName": "Error Red Ink",
+        "tonalRamp": [
+          "oklch(15% 0.086 20)",
+          "oklch(25% 0.143 20)",
+          "oklch(35% 0.190 20)",
+          "oklch(45% 0.190 20)",
+          "oklch(55% 0.190 20)",
+          "oklch(65% 0.190 20)",
+          "oklch(80% 0.143 20)",
+          "oklch(95% 0.086 20)"
+        ]
+      },
+      "error-wash": {
+        "role": "functional",
+        "displayName": "Error Wash",
+        "tonalRamp": [
+          "oklch(15% 0.027 10)",
+          "oklch(25% 0.045 10)",
+          "oklch(35% 0.060 10)",
+          "oklch(45% 0.060 10)",
+          "oklch(55% 0.060 10)",
+          "oklch(65% 0.060 10)",
+          "oklch(80% 0.045 10)",
+          "oklch(95% 0.027 10)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headline, one sticker per line; uppercase Bagel Fat One."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings with one stuck sticker word."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Service names, process steps, notebook stickers; project names run larger."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "The About manifesto that lights up word by word on scroll."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Paragraphs in Familjen Grotesk, 40 to 46ch inside cards."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, form labels, nav links, FAQ questions, small text stickers."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sticker-rest",
+        "value": "0 0 0 var(--sticker-edge) #fff, 0 0.12em 0.2em calc(var(--sticker-edge) - 0.02em) rgb(13 15 26 / 0.12), 0 0.35em 0.7em -0.1em rgb(13 15 26 / 0.22)",
+        "purpose": "Blue and black stickers: white die-cut edge plus soft downward lift."
+      },
+      {
+        "name": "sticker-white-rest",
+        "value": "0 0 0 1px var(--color-line), 0 0.12em 0.2em rgb(13 15 26 / 0.1), 0 0.35em 0.7em -0.1em rgb(13 15 26 / 0.2)",
+        "purpose": "White stickers on white paper: hairline instead of white edge."
+      },
+      {
+        "name": "sticker-lifted",
+        "value": "0 0 0 var(--sticker-edge) #fff, 0 1.2em 1.6em -0.3em rgb(13 15 26 / 0.35)",
+        "purpose": "A sticker while it is being dragged."
+      },
+      {
+        "name": "button-rest",
+        "value": "0 0 0 4px #fff, 0 3px 5px 2px rgb(13 15 26 / 0.1), 0 10px 18px -6px rgb(13 15 26 / 0.3)",
+        "purpose": "Sticker buttons at rest."
+      },
+      {
+        "name": "button-hover",
+        "value": "0 0 0 4px #fff, 0 22px 28px -12px rgb(13 15 26 / 0.45)",
+        "purpose": "Sticker buttons lifted on hover."
+      },
+      {
+        "name": "card-drop",
+        "value": "0 0 0 1px var(--color-line), 0 30px 50px -28px rgb(13 15 26 / 0.45)",
+        "purpose": "Project screenshot frames."
+      },
+      {
+        "name": "lid-drop",
+        "value": "0 40px 60px -36px rgb(13 15 26 / 0.7)",
+        "purpose": "The black notebook lid slab."
+      },
+      {
+        "name": "tape",
+        "value": "0 14px 24px -14px rgb(13 15 26 / 0.45)",
+        "purpose": "Packing-tape marquee bands."
+      },
+      {
+        "name": "peel-curl",
+        "value": "-6px 6px 12px -4px rgb(13 15 26 / 0.25)",
+        "purpose": "Under the peeled corner of cards."
+      },
+      {
+        "name": "field-focus",
+        "value": "0 0 0 4px rgb(31 59 255 / 0.15)",
+        "purpose": "Soft blue halo on focused fields."
+      }
+    ],
+    "motion": [
+      {
+        "name": "slap",
+        "value": "from scale 1.45, rotate ±9deg alternating, autoAlpha 0; 0.55s back.out(2.4), stagger 0.09s, ScrollTrigger top 80% once",
+        "purpose": "Entrance for every sticker."
+      },
+      {
+        "name": "rise",
+        "value": "from y 24-40px, autoAlpha 0; 0.7-0.9s expo.out, stagger 0.06-0.08s",
+        "purpose": "Entrance for plain text beside stickers."
+      },
+      {
+        "name": "ease-peel",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Straightening, peel corner growth, button lift (0.35-0.7s)."
+      },
+      {
+        "name": "lift",
+        "value": "scale 1.06, 0.2s power2.out",
+        "purpose": "Picking up a draggable sticker."
+      },
+      {
+        "name": "drop",
+        "value": "scale 1, 0.45s back.out(3)",
+        "purpose": "Releasing a dragged sticker."
+      },
+      {
+        "name": "restick",
+        "value": "x 0, y 0, 0.7s back.out(1.6), stagger 0.04s",
+        "purpose": "Reset that sticks every sticker back in place."
+      },
+      {
+        "name": "press",
+        "value": "scale 0.96, 0.15s ease-out",
+        "purpose": "Button press."
+      },
+      {
+        "name": "tape-loop",
+        "value": "translateX(-50%), 42s linear infinite",
+        "purpose": "Packing-tape marquees, opposite directions."
+      },
+      {
+        "name": "spin-slow",
+        "value": "rotate 360deg, 18s linear infinite",
+        "purpose": "Text ring on round stickers."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce disables all of the above",
+        "purpose": "Accessibility."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      },
+      {
+        "name": "drag-large",
+        "value": "(min-width: 1024px) and (pointer: fine)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Sticker Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Blue vinyl button with a white 4px cut edge, tilted -1.2deg; straightens and lifts on hover, presses to 0.96.",
+      "html": "<button class=\"ds-btn\">Quiero mi demo <svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></button>",
+      "css": ":host{--paper:#ffffff;--paper-soft:#f2f4fa;--ink:#0d0f1a;--muted:#5b6075;--line:#d9dceb;--accent:#1f3bff;--accent-deep:#1427c9;--color-paper:var(--paper);--color-paper-soft:var(--paper-soft);--color-ink:var(--ink);--color-muted:var(--muted);--color-line:var(--line);--color-accent:var(--accent);--color-accent-deep:var(--accent-deep);} .ds-btn{--sticker-edge:4px;display:inline-flex;align-items:center;gap:0.6rem;border:0;border-radius:0.9rem;background:var(--color-accent);color:#fff;font:600 1.125rem 'Familjen Grotesk',sans-serif;padding:16px 28px;rotate:-1.2deg;cursor:pointer;box-shadow:0 0 0 var(--sticker-edge) #fff,0 3px 5px 2px rgb(13 15 26 / 0.1),0 10px 18px -6px rgb(13 15 26 / 0.3);transition:rotate .35s cubic-bezier(0.16,1,0.3,1),translate .35s cubic-bezier(0.16,1,0.3,1),scale .15s ease-out,box-shadow .35s cubic-bezier(0.16,1,0.3,1),background-color .2s;} .ds-btn:hover{rotate:0deg;translate:0 -3px;background:var(--color-accent-deep);box-shadow:0 0 0 var(--sticker-edge) #fff,0 22px 28px -12px rgb(13 15 26 / 0.45);} .ds-btn:active{scale:0.96;translate:0 0;} .ds-btn:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;}"
+    },
+    {
+      "name": "Ink Sticker Button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Black variant of the sticker button that turns blue on hover; used to open a project.",
+      "html": "<a href=\"#\" class=\"ds-btn ds-btn-ink\">Ver la web <svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 17 17 7M8 7h9v9\"/></svg></a>",
+      "css": ":host{--paper:#ffffff;--paper-soft:#f2f4fa;--ink:#0d0f1a;--muted:#5b6075;--line:#d9dceb;--accent:#1f3bff;--accent-deep:#1427c9;--color-paper:var(--paper);--color-paper-soft:var(--paper-soft);--color-ink:var(--ink);--color-muted:var(--muted);--color-line:var(--line);--color-accent:var(--accent);--color-accent-deep:var(--accent-deep);} .ds-btn{--sticker-edge:4px;display:inline-flex;align-items:center;gap:0.6rem;border:0;border-radius:0.9rem;background:var(--color-accent);color:#fff;font:600 1.125rem 'Familjen Grotesk',sans-serif;padding:16px 28px;rotate:-1.2deg;cursor:pointer;box-shadow:0 0 0 var(--sticker-edge) #fff,0 3px 5px 2px rgb(13 15 26 / 0.1),0 10px 18px -6px rgb(13 15 26 / 0.3);transition:rotate .35s cubic-bezier(0.16,1,0.3,1),translate .35s cubic-bezier(0.16,1,0.3,1),scale .15s ease-out,box-shadow .35s cubic-bezier(0.16,1,0.3,1),background-color .2s;} .ds-btn:hover{rotate:0deg;translate:0 -3px;background:var(--color-accent-deep);box-shadow:0 0 0 var(--sticker-edge) #fff,0 22px 28px -12px rgb(13 15 26 / 0.45);} .ds-btn:active{scale:0.96;translate:0 0;} .ds-btn:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;} .ds-btn-ink{background:var(--color-ink);text-decoration:none;padding:14px 24px;} .ds-btn-ink:hover{background:var(--color-accent);}"
+    },
+    {
+      "name": "Outline Pill Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action: pill with a 2px inset ink ring that fills black on hover.",
+      "html": "<button class=\"ds-btn-outline\">Quiero una así</button>",
+      "css": ":host{--paper:#ffffff;--paper-soft:#f2f4fa;--ink:#0d0f1a;--muted:#5b6075;--line:#d9dceb;--accent:#1f3bff;--accent-deep:#1427c9;--color-paper:var(--paper);--color-paper-soft:var(--paper-soft);--color-ink:var(--ink);--color-muted:var(--muted);--color-line:var(--line);--color-accent:var(--accent);--color-accent-deep:var(--accent-deep);} .ds-btn-outline{display:inline-flex;align-items:center;border:0;border-radius:9999px;background:transparent;color:var(--color-ink);font:600 1rem 'Familjen Grotesk',sans-serif;padding:14px 24px;box-shadow:inset 0 0 0 2px var(--color-ink);cursor:pointer;transition:background-color .2s,color .2s;} .ds-btn-outline:hover{background:var(--color-ink);color:#fff;} .ds-btn-outline:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;}"
+    },
+    {
+      "name": "Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "White field with a 2px die-cut grey border; blue border and soft halo on focus.",
+      "html": "<label class=\"ds-label\">¿Cómo se llama tu negocio?<input class=\"ds-field\" placeholder=\"Ej: Peluquería Sol\"></label>",
+      "css": ":host{--paper:#ffffff;--paper-soft:#f2f4fa;--ink:#0d0f1a;--muted:#5b6075;--line:#d9dceb;--accent:#1f3bff;--accent-deep:#1427c9;--color-paper:var(--paper);--color-paper-soft:var(--paper-soft);--color-ink:var(--ink);--color-muted:var(--muted);--color-line:var(--line);--color-accent:var(--accent);--color-accent-deep:var(--accent-deep);} .ds-label{display:block;font:600 1rem 'Familjen Grotesk',sans-serif;color:var(--color-ink);max-width:420px;} .ds-field{display:block;margin-top:0.5rem;width:100%;box-sizing:border-box;border-radius:0.9rem;border:2px solid var(--color-line);background:#fff;padding:0.85rem 1rem;font:400 1.0625rem 'Familjen Grotesk',sans-serif;color:var(--color-ink);caret-color:var(--color-accent);transition:border-color .2s,box-shadow .2s;} .ds-field:hover{border-color:#b9bed6;} .ds-field:focus{outline:none;border-color:var(--color-accent);box-shadow:0 0 0 4px rgb(31 59 255 / 0.15);}"
+    },
+    {
+      "name": "Floating Nav Pill",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Desktop nav: a floating white pill whose links fill blue on hover.",
+      "html": "<nav><ul class=\"ds-nav\"><li><a href=\"#\">Trabajos</a></li><li><a href=\"#\">Servicios</a></li><li><a href=\"#\">Sobre mí</a></li><li><a href=\"#\">Contacto</a></li></ul></nav>",
+      "css": ":host{--paper:#ffffff;--paper-soft:#f2f4fa;--ink:#0d0f1a;--muted:#5b6075;--line:#d9dceb;--accent:#1f3bff;--accent-deep:#1427c9;--color-paper:var(--paper);--color-paper-soft:var(--paper-soft);--color-ink:var(--ink);--color-muted:var(--muted);--color-line:var(--line);--color-accent:var(--accent);--color-accent-deep:var(--accent-deep);} .ds-nav{display:flex;gap:4px;list-style:none;margin:0;padding:4px;border-radius:9999px;background:rgb(255 255 255 / 0.9);box-shadow:0 0 0 1px var(--color-line),0 10px 24px -14px rgb(13 15 26 / 0.35);width:fit-content;} .ds-nav a{display:block;border-radius:9999px;padding:8px 16px;font:600 0.95rem 'Familjen Grotesk',sans-serif;color:rgb(13 15 26 / 0.75);text-decoration:none;transition:background-color .2s,color .2s;} .ds-nav a:hover{background:var(--color-accent);color:#fff;} .ds-nav a:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;}"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Tinted paper pill listing features; service chips lead with a blue check.",
+      "html": "<ul class=\"ds-chips\"><li><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"#1f3bff\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12.5 10 17l9-10\"/></svg> Dominio y hosting</li><li><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"#1f3bff\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12.5 10 17l9-10\"/></svg> Panel simple</li></ul>",
+      "css": ":host{--paper:#ffffff;--paper-soft:#f2f4fa;--ink:#0d0f1a;--muted:#5b6075;--line:#d9dceb;--accent:#1f3bff;--accent-deep:#1427c9;--color-paper:var(--paper);--color-paper-soft:var(--paper-soft);--color-ink:var(--ink);--color-muted:var(--muted);--color-line:var(--line);--color-accent:var(--accent);--color-accent-deep:var(--accent-deep);} .ds-chips{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0;} .ds-chips li{display:inline-flex;align-items:center;gap:6px;border-radius:9999px;background:var(--color-paper-soft);color:var(--color-ink);padding:6px 12px;font:500 0.875rem 'Familjen Grotesk',sans-serif;}"
+    },
+    {
+      "name": "Vinyl Stickers",
+      "kind": "custom",
+      "refersTo": "sticker-blue",
+      "description": "The core unit: blue, black and white text stickers with the white cut edge, soft lift and tilt; straighten on hover.",
+      "html": "<div><span class=\"ds-sticker ds-sticker-ink\">Webs que</span><br><span class=\"ds-sticker ds-sticker-white\">hacen</span><br><span class=\"ds-sticker ds-sticker-blue\">vender.</span></div>",
+      "css": ":host{--paper:#ffffff;--paper-soft:#f2f4fa;--ink:#0d0f1a;--muted:#5b6075;--line:#d9dceb;--accent:#1f3bff;--accent-deep:#1427c9;--color-paper:var(--paper);--color-paper-soft:var(--paper-soft);--color-ink:var(--ink);--color-muted:var(--muted);--color-line:var(--line);--color-accent:var(--accent);--color-accent-deep:var(--accent-deep);} .ds-sticker{--sticker-edge:0.14em;display:inline-block;border-radius:0.32em;padding:0.14em 0.22em 0.06em;font:400 3.5rem/1 'Bagel Fat One',sans-serif;letter-spacing:-0.01em;text-transform:uppercase;box-shadow:0 0 0 var(--sticker-edge) #fff,0 0.12em 0.2em calc(var(--sticker-edge) - 0.02em) rgb(13 15 26 / 0.12),0 0.35em 0.7em -0.1em rgb(13 15 26 / 0.22);transition:rotate .5s cubic-bezier(0.16,1,0.3,1);margin:0.2em;} .ds-sticker:hover{rotate:0deg!important;} .ds-sticker-blue{background:var(--color-accent);color:#fff;rotate:-4deg;} .ds-sticker-ink{background:var(--color-ink);color:#fff;rotate:-2deg;} .ds-sticker-white{background:#fff;color:var(--color-ink);rotate:1.5deg;box-shadow:0 0 0 1px var(--color-line),0 0.12em 0.2em rgb(13 15 26 / 0.1),0 0.35em 0.7em -0.1em rgb(13 15 26 / 0.2);}"
+    },
+    {
+      "name": "Service Card",
+      "kind": "card",
+      "refersTo": "sticker-white",
+      "description": "White sticker card on the blue sheet with a 7px edge, tilt, and a peeling top-right corner.",
+      "html": "<div class=\"ds-sheet\"><div class=\"ds-card\"><h3>Landing</h3><p>Una página que explica lo que hacés y lleva a que te escriban.</p><button class=\"ds-btn\">Quiero esto <svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></button></div></div>",
+      "css": ":host{--paper:#ffffff;--paper-soft:#f2f4fa;--ink:#0d0f1a;--muted:#5b6075;--line:#d9dceb;--accent:#1f3bff;--accent-deep:#1427c9;--color-paper:var(--paper);--color-paper-soft:var(--paper-soft);--color-ink:var(--ink);--color-muted:var(--muted);--color-line:var(--line);--color-accent:var(--accent);--color-accent-deep:var(--accent-deep);} .ds-btn{--sticker-edge:4px;display:inline-flex;align-items:center;gap:0.6rem;border:0;border-radius:0.9rem;background:var(--color-accent);color:#fff;font:600 1.125rem 'Familjen Grotesk',sans-serif;padding:16px 28px;rotate:-1.2deg;cursor:pointer;box-shadow:0 0 0 var(--sticker-edge) #fff,0 3px 5px 2px rgb(13 15 26 / 0.1),0 10px 18px -6px rgb(13 15 26 / 0.3);transition:rotate .35s cubic-bezier(0.16,1,0.3,1),translate .35s cubic-bezier(0.16,1,0.3,1),scale .15s ease-out,box-shadow .35s cubic-bezier(0.16,1,0.3,1),background-color .2s;} .ds-btn:hover{rotate:0deg;translate:0 -3px;background:var(--color-accent-deep);box-shadow:0 0 0 var(--sticker-edge) #fff,0 22px 28px -12px rgb(13 15 26 / 0.45);} .ds-btn:active{scale:0.96;translate:0 0;} .ds-btn:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;} .ds-sheet{background:var(--color-accent);padding:40px;} .ds-card{position:relative;isolation:isolate;--sticker-edge:7px;background:#fff;color:var(--color-ink);border-radius:1.75rem;padding:28px;max-width:420px;rotate:-2deg;box-shadow:0 0 0 7px #fff,0 0.12em 0.2em 5px rgb(13 15 26 / 0.12),0 0.35em 0.7em -0.1em rgb(13 15 26 / 0.22);transition:rotate .5s cubic-bezier(0.16,1,0.3,1);} .ds-card:hover{rotate:0deg;} .ds-card::after{content:'';position:absolute;top:0;right:0;width:5rem;height:5rem;transform:scale(0.48);transform-origin:top right;border-top-right-radius:inherit;border-bottom-left-radius:0.6rem;background:linear-gradient(225deg,var(--color-accent) 50%,#dfe3f2 50%,#fff 78%);box-shadow:-6px 6px 12px -4px rgb(13 15 26 / 0.25);transition:transform .5s cubic-bezier(0.16,1,0.3,1);pointer-events:none;} .ds-card:hover::after{transform:scale(1);} .ds-card h3{margin:0;font:400 2.25rem/1 'Bagel Fat One',sans-serif;text-transform:uppercase;} .ds-card p{font:400 1.125rem/1.625 'Familjen Grotesk',sans-serif;color:rgb(13 15 26 / 0.75);} .ds-card .ds-btn{padding:12px 24px;font-size:1rem;}"
+    },
+    {
+      "name": "FAQ Sticker Row",
+      "kind": "custom",
+      "refersTo": "sticker-white",
+      "description": "A white sticker details row, tilted, straightening when open; round blue toggle whose plus rotates 45deg.",
+      "html": "<details class=\"ds-faq\"><summary>¿Cuánto tarda? <span class=\"ds-toggle\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></span></summary><p>Una landing, entre una y dos semanas.</p></details>",
+      "css": ":host{--paper:#ffffff;--paper-soft:#f2f4fa;--ink:#0d0f1a;--muted:#5b6075;--line:#d9dceb;--accent:#1f3bff;--accent-deep:#1427c9;--color-paper:var(--paper);--color-paper-soft:var(--paper-soft);--color-ink:var(--ink);--color-muted:var(--muted);--color-line:var(--line);--color-accent:var(--accent);--color-accent-deep:var(--accent-deep);} .ds-faq{background:#fff;color:var(--color-ink);border-radius:1.4rem;max-width:560px;rotate:-0.8deg;box-shadow:0 0 0 1px var(--color-line),0 0.12em 0.2em rgb(13 15 26 / 0.1),0 0.35em 0.7em -0.1em rgb(13 15 26 / 0.2);transition:rotate .5s;} .ds-faq[open]{rotate:0deg;} .ds-faq summary{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px;list-style:none;cursor:pointer;font:600 1.25rem 'Familjen Grotesk',sans-serif;} .ds-faq summary::-webkit-details-marker{display:none;} .ds-faq summary:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;border-radius:6px;} .ds-toggle{display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;border-radius:9999px;background:var(--color-accent);color:#fff;box-shadow:0 0 0 3px #fff,0 3px 6px rgb(13 15 26 / 0.15);transition:transform .3s;} .ds-faq[open] .ds-toggle{transform:rotate(45deg);} .ds-faq p{margin:0;padding:0 24px 28px;font:400 1.125rem/1.625 'Familjen Grotesk',sans-serif;color:rgb(13 15 26 / 0.75);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Sticker Sheet",
+    "overview": "The site is a sheet of die-cut stickers, the thing every small Uruguayan business prints to brand its packaging. White backing paper carries faint dashed die-lines; on it sit stickers printed in two vinyls, electric blue and black, each with a thick white cut edge, a soft shadow lifting it off the paper, and a slight tilt. Headings are words stuck down as stickers; cards, buttons, step markers, FAQ rows and contact links are stickers too. Whole sections can flood into a full blue sheet where white stickers carry the content.\n\nThe world is tactile and playful, not decorative: stickers can be peeled and thrown (drag with inertia), project cards curl a corner on hover, and every sticker that enters the screen arrives with a \"slap\", dropping from large with a bounce and a twist, while the plain text around it simply rises into place. Density is generous: big section padding, few elements per viewport, type at poster scale. The build rejects both the dark big-type portfolio it replaced and the cool white Swiss grid.",
+    "keyCharacteristics": [
+      "White paper, two vinyls (electric blue, black), nothing else chromatic.",
+      "Every sticker has a thick white die-cut edge and a soft, downward offset shadow.",
+      "Stickers tilt slightly, alternating direction, and straighten on hover or open.",
+      "Fat rounded display letters (Bagel Fat One), always uppercase; a grotesk (Familjen Grotesk) for reading.",
+      "Dashed die-lines mark cuts, separators, and the hole a peeled sticker leaves.",
+      "Stickers slap in, text rises; one signature interaction (drag and throw), one card gesture (corner peel)."
+    ],
+    "rules": [
+      {
+        "name": "The Two Vinyls Rule",
+        "body": "Only blue and black are printed on the sheet. No third chromatic hue enters the palette; red exists only for form errors.",
+        "section": "colors"
+      },
+      {
+        "name": "The Full Sheet Rule",
+        "body": "When a section floods, it floods blue, edge to edge, and its content rides on white stickers. Black appears as stickers, tape, the notebook lid and the footer, never as a full content section.",
+        "section": "colors"
+      },
+      {
+        "name": "The Vinyl Letter Rule",
+        "body": "Bagel Fat One is display only: always uppercase, weight 400 with font-synthesis off and -0.01em tracking. Paragraphs, labels and form text are always Familjen Grotesk.",
+        "section": "typography"
+      },
+      {
+        "name": "The Stuck Word Rule",
+        "body": "A section heading sets one word or short phrase as a sticker (blue, black or white, tilted 2 to 3 degrees, padded 0.2em), and the rest of the heading sits on the paper as plain display type.",
+        "section": "typography"
+      },
+      {
+        "name": "The White Edge Rule",
+        "body": "A colored sticker always has its white cut edge: 0.14em by default, 4px on buttons, 7px on service cards, 3px on small badges. A white sticker on white paper swaps the edge for a 1px die-cut grey hairline.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Soft Lift Rule",
+        "body": "Shadows are soft, ink-tinted and fall downward. Depth grows only when something is lifted (drag, hover on buttons).",
+        "section": "elevation"
+      },
+      {
+        "name": "The Slight Tilt Rule",
+        "body": "Stickers sit tilted, between 0.6 and 6 degrees, alternating direction between neighbors. Hover, focus or opening straightens them to 0.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** give every blue or black sticker its white cut edge (0.14em, 4px on buttons) and the soft downward shadow.",
+      "**Do** tilt stickers between 0.6 and 6 degrees, alternate direction between neighbors, and straighten them on hover, focus or open.",
+      "**Do** set one word of each section heading as a sticker (The Stuck Word Rule).",
+      "**Do** flood a section in blue when it needs to stand apart, and carry its content on white stickers with the peel ground set to blue.",
+      "**Do** bring stickers in with the slap and plain text in with the rise.",
+      "**Do** use the 2px rounded-stroke SVG icon set for arrows, checks, WhatsApp and Instagram.",
+      "**Do** keep large-sticker dragging to desktop with a fine pointer; keep small stickers draggable everywhere.",
+      "**Do** honor prefers-reduced-motion by stopping all motion."
+    ],
+    "donts": [
+      "**Don't** introduce a third chromatic hue; red is reserved for form errors.",
+      "**Don't** use hard, unblurred offset shadows; this sheet's depth is soft.",
+      "**Don't** set paragraphs, labels or form text in Bagel Fat One, or let the browser synthesize a bold for it.",
+      "**Don't** flood a content section in black; black lives in stickers, tape, the notebook lid and the footer.",
+      "**Don't** use text glyph arrows or emoji in place of the SVG icons.",
+      "**Don't** invent a third entrance gesture beside slap and rise."
+    ]
+  }
+}

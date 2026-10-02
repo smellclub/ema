@@ -303,7 +303,7 @@ select.field {
   border-color: #c4122f;
 }
 .field::placeholder {
-  color: #7d8296;
+  color: #6b7085;
 }
 .field:hover {
   border-color: #b9bed6;

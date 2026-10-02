@@ -17,7 +17,7 @@ export function prefersReducedMotion() {
 
 /**
  * "Slap": el sticker cae sobre la plancha desde grande, con un rebote y un giro.
- * Es la única entrada que usa la web, así todo se siente parte de lo mismo.
+ * Es la entrada de todos los stickers (el texto común solo sube y aparece), así todo se siente parte de lo mismo.
  */
 export function slapIn(targets: gsap.TweenTarget, trigger: Element | string, opts: { stagger?: number; start?: string } = {}) {
   return gsap.from(targets, {
