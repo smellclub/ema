@@ -77,7 +77,7 @@ export function Header() {
           <LocalTime className="hidden rounded-full bg-paper/85 px-2 py-1 text-sm text-muted backdrop-blur-sm xl:inline" />
           <a
             href="#contacto"
-            className="hidden rounded-full bg-accent px-5 py-2.5 text-[0.95rem] font-semibold text-white shadow-[0_10px_20px_-10px_rgb(31_59_255/0.8)] transition-[transform,background-color] hover:-rotate-3 hover:bg-accent-deep md:inline-block"
+            className="btn-sticker hidden px-5 py-2.5 text-[0.95rem] md:inline-flex"
           >
             Hablemos
           </a>

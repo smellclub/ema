@@ -106,7 +106,7 @@ export function Hero() {
                 big.reset();
                 small.reset();
               }}
-              className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-muted transition-colors hover:bg-paper-soft hover:text-ink [@media(pointer:fine)]:inline-flex"
+              className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-muted transition-colors hover:bg-paper-soft hover:text-ink"
             >
               <Icon name="reset" className="size-4" />
               Volver a pegar los stickers
@@ -121,9 +121,9 @@ export function Hero() {
             e.preventDefault();
             requestDemo({ business: business.trim() });
           }}
-          className="relative mx-auto w-full max-w-lg rounded-[2rem] bg-paper-soft p-6 sm:p-8"
+          className="relative mx-auto w-full max-w-lg rounded-[2rem] border-2 border-dashed border-line bg-paper p-6 sm:p-8"
         >
-          <div className="kiss-cut grid min-h-56 place-items-center rounded-[1.4rem] bg-paper px-6 py-10 sm:min-h-64">
+          <div className="grid min-h-52 place-items-center px-2 py-8 sm:min-h-60">
             <div aria-live="polite" className="sticker sticker-blue max-w-full rotate-[3deg] px-6 pb-4 pt-5 text-center">
               <p className="break-words font-display leading-[1.05]" style={{ fontSize }}>
                 {name}
@@ -146,7 +146,7 @@ export function Hero() {
           />
           <button
             type="submit"
-            className="group mt-4 inline-flex w-full items-center justify-center gap-3 rounded-full bg-accent px-7 py-4 text-lg font-semibold text-white shadow-[0_12px_24px_-10px_rgb(31_59_255/0.7)] transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-accent-deep active:translate-y-0"
+            className="btn-sticker group mt-5 w-full px-7 py-4 text-lg"
           >
             Quiero mi demo
             <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />
@@ -170,7 +170,7 @@ export function Hero() {
           </span>
         </span>
 
-        <span data-wrap className="absolute bottom-[3%] right-[3%] hidden w-36 sm:block lg:bottom-[9%] lg:right-[2.5%] lg:w-40">
+        <span data-wrap className="absolute bottom-[2%] right-[2%] w-28 sm:w-36 lg:bottom-[9%] lg:right-[2.5%] lg:w-40">
           <span data-in="pop" className="block">
             <span data-drag data-cursor="Despegá" className="pointer-events-auto block cursor-grab touch-none">
               <BurstSticker className="w-full text-xl">
@@ -182,7 +182,7 @@ export function Hero() {
           </span>
         </span>
 
-        <span data-wrap className="absolute left-[54%] top-[11%] hidden lg:block">
+        <span data-wrap className="absolute right-[4%] top-[33rem] sm:hidden lg:right-auto lg:left-[54%] lg:top-[11%] lg:block">
           <span data-in="pop" className="block">
             <span data-drag data-cursor="Despegá" className="sticker sticker-ink pointer-events-auto block -rotate-6 cursor-grab touch-none px-4 py-2 text-base font-semibold">
               Rápida en el celu
@@ -190,7 +190,7 @@ export function Hero() {
           </span>
         </span>
 
-        <span data-wrap className="absolute bottom-[12%] left-[38%] hidden w-20 xl:block">
+        <span data-wrap className="absolute right-[6%] top-[18.5rem] w-14 sm:hidden xl:right-auto xl:top-auto xl:bottom-[12%] xl:left-[38%] xl:block xl:w-20">
           <span data-in="pop" className="block">
             <span data-drag data-cursor="Despegá" className="pointer-events-auto block cursor-grab touch-none">
               <BallSticker className="w-full" />

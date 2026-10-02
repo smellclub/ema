@@ -44,7 +44,7 @@ export function Services() {
             <li key={s.id} className={look[i % look.length].place}>
               <div data-service>
                 <div
-                  className={`sticker sticker-white flex h-full flex-col p-7 text-ink transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:rotate-0 md:p-9 ${look[i % look.length].tilt}`}
+                  className={`sticker peel flex h-full flex-col !rounded-[1.75rem] bg-white p-7 text-ink [--peel-ground:var(--color-accent)] [--sticker-edge:7px] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:rotate-0 md:p-9 ${look[i % look.length].tilt}`}
                 >
                   <h3 className="font-display text-4xl uppercase leading-none md:text-5xl">{s.name}</h3>
                   <p className="mt-4 max-w-[40ch] text-lg leading-relaxed text-ink/75">{s.description}</p>
@@ -59,7 +59,7 @@ export function Services() {
                   <button
                     type="button"
                     onClick={() => requestDemo({ service: s.id })}
-                    className="group mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-white transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-accent-deep"
+                    className="btn-sticker group mt-8 w-fit px-6 py-3"
                   >
                     Quiero esto
                     <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />

@@ -29,7 +29,7 @@ export function About() {
       if (prefersReducedMotion()) return;
       gsap.fromTo(
         "[data-w]",
-        { opacity: 0.16 },
+        { opacity: 0.4 },
         {
           opacity: 1,
           stagger: 0.05,
@@ -43,7 +43,7 @@ export function About() {
   );
 
   return (
-    <section ref={root} id="sobre-mi" aria-labelledby="sobre-title" className="relative overflow-hidden bg-paper-soft">
+    <section ref={root} id="sobre-mi" aria-labelledby="sobre-title" className="die-line relative overflow-hidden">
       <div className="mx-auto max-w-[1600px] px-5 py-28 md:px-10 md:py-40">
         <h2 id="sobre-title" className="font-display text-[clamp(3rem,10vw,6rem)] uppercase leading-[1.05]">
           <span className="sticker sticker-ink rotate-2 px-[0.2em] pt-[0.08em]">Quién</span> soy

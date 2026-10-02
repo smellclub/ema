@@ -174,7 +174,7 @@ export function ContactForm() {
             required
             aria-invalid={errors.privacy ? true : undefined}
             aria-describedby={errors.privacy ? "privacy-error" : undefined}
-            className="mt-0.5 size-5 shrink-0 accent-[#1f3bff]"
+            className="check mt-0.5"
           />
           <span>
             Acepto la{" "}
@@ -209,7 +209,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={pending}
-        className="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-accent px-8 py-5 text-lg font-semibold text-white shadow-[0_12px_24px_-10px_rgb(31_59_255/0.7)] transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-accent-deep disabled:translate-y-0 disabled:cursor-wait disabled:opacity-70 md:w-auto md:justify-self-start"
+        className="btn-sticker group w-full px-8 py-5 text-lg md:w-auto md:justify-self-start"
       >
         {pending ? "Enviando…" : "Enviar mensaje"}
         <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />

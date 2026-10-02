@@ -21,7 +21,7 @@ export function Process() {
       tl.from("[data-line]", { [desktop ? "scaleX" : "scaleY"]: 0, ease: "none", duration: 4 });
       gsap.utils.toArray<HTMLElement>("[data-step]").forEach((step, i) => {
         tl.from(step.querySelector("[data-dot]"), { scale: 0, rotate: -90, duration: 0.5, ease: "back.out(3)" }, i);
-        tl.from(step.querySelector("[data-copy]"), { autoAlpha: 0.15, y: 24, duration: 0.8, ease: "power2.out" }, i + 0.1);
+        tl.from(step.querySelector("[data-copy]"), { autoAlpha: 0.4, y: 24, duration: 0.8, ease: "power2.out" }, i + 0.1);
       });
     },
     { scope: root },

@@ -149,7 +149,7 @@ html.lenis body {
   transform: scale(var(--peel, 0.48));
   transform-origin: top right;
   border-top-right-radius: inherit;
-  background: linear-gradient(225deg, var(--color-paper) 50%, #dfe3f2 50%, #fff 78%);
+  background: linear-gradient(225deg, var(--peel-ground, var(--color-paper)) 50%, #dfe3f2 50%, #fff 78%);
   box-shadow: -6px 6px 12px -4px rgb(13 15 26 / 0.25);
   border-bottom-left-radius: 0.6rem;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -159,6 +159,63 @@ html.lenis body {
 .peel:hover::after,
 .peel:focus-within::after {
   --peel: 1;
+}
+
+/*
+ * BOTÓN STICKER: las acciones principales también son vinilos.
+ * Borde blanco troquelado, apenas torcido; al pasar el mouse se levanta del papel
+ * y al apretar se "pega" (se achica un poco).
+ */
+.btn-sticker {
+  --sticker-edge: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 0.9rem;
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 600;
+  rotate: -1.2deg;
+  box-shadow:
+    0 0 0 var(--sticker-edge) #fff,
+    0 3px 5px 2px rgb(13 15 26 / 0.1),
+    0 10px 18px -6px rgb(13 15 26 / 0.3);
+  transition:
+    rotate 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    translate 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    scale 0.15s ease-out,
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.2s;
+}
+.btn-sticker:hover {
+  rotate: 0deg;
+  translate: 0 -3px;
+  background: var(--color-accent-deep);
+  box-shadow:
+    0 0 0 var(--sticker-edge) #fff,
+    0 22px 28px -12px rgb(13 15 26 / 0.45);
+}
+.btn-sticker:active {
+  scale: 0.96;
+  translate: 0 0;
+}
+.btn-sticker:disabled {
+  cursor: wait;
+  opacity: 0.75;
+  rotate: 0deg;
+  translate: 0 0;
+}
+.btn-sticker-ink {
+  background: var(--color-ink);
+}
+.btn-sticker-ink:hover {
+  background: var(--color-accent);
+}
+
+/* Línea de troquel: el "cortá por acá" punteado que separa las zonas de la plancha. */
+.die-line {
+  border-top: 2px dashed var(--color-line);
 }
 
 }
@@ -204,11 +261,46 @@ html.lenis body {
   width: 100%;
   border-radius: 0.9rem;
   border: 2px solid var(--color-line);
-  background: var(--color-paper-soft);
+  background: #fff;
   padding: 0.85rem 1rem;
   font-size: 1.0625rem;
   color: var(--color-ink);
   transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+/* Flechita del select dibujada con los colores de la web (la del navegador queda gris y distinta en cada celular). */
+select.field {
+  appearance: none;
+  padding-right: 2.75rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f3bff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-size: 1.25rem;
+  cursor: pointer;
+}
+/* Casilla de privacidad: un mini sticker que se pone azul con el tilde. */
+.check {
+  appearance: none;
+  display: grid;
+  place-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  flex-shrink: 0;
+  border: 2px solid #b9bed6;
+  border-radius: 0.4rem;
+  background: #fff;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, rotate 0.3s;
+}
+.check:hover {
+  border-color: var(--color-accent);
+}
+.check:checked {
+  border-color: var(--color-accent);
+  background: var(--color-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5 10 17l9-10'/%3E%3C/svg%3E") center / 80% no-repeat;
+  rotate: -6deg;
+}
+.check[aria-invalid="true"] {
+  border-color: #c4122f;
 }
 .field::placeholder {
   color: #7d8296;

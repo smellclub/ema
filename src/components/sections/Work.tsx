@@ -78,9 +78,15 @@ export function Work() {
                     aria-label={`Abrir ${p.name} (se abre en otra pestaña)`}
                     className="group block"
                   >
-                    <div data-slap>
+                    <div data-slap className="relative">
+                      {/* La etiqueta va pegada sobre la captura: "Demo" queda a la vista siempre. */}
+                      <span
+                        className={`sticker absolute -top-4 z-10 px-3.5 py-1.5 text-sm font-semibold md:-top-5 md:text-base ${flip ? "right-8" : "left-6"} ${p.tag === "Demo" ? "sticker-ink -rotate-3" : "sticker-blue rotate-2"}`}
+                      >
+                        {p.tag === "Demo" ? "Demo · negocio inventado" : p.tag}
+                      </span>
                       <div
-                        className={`peel rounded-[1.4rem] bg-white p-2.5 shadow-[0_0_0_1px_var(--color-line),0_30px_50px_-28px_rgb(13_15_26/0.45)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-0 md:p-3 ${flip ? "rotate-[1.5deg]" : "-rotate-[1.5deg]"}`}
+                        className={`peel rounded-[1.4rem] bg-white p-2.5 outline-2 outline-offset-[12px] outline-dashed outline-line shadow-[0_0_0_1px_var(--color-line),0_30px_50px_-28px_rgb(13_15_26/0.45)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-0 md:p-3 ${flip ? "rotate-[1.5deg]" : "-rotate-[1.5deg]"}`}
                       >
                         <div className="overflow-hidden rounded-[0.9rem] bg-paper-soft">
                           <div className="flex items-center gap-1.5 px-4 py-3">
@@ -125,15 +131,7 @@ export function Work() {
                 </div>
 
                 <div className={`lg:col-span-5 ${flip ? "lg:order-1" : ""}`}>
-                  <p data-rise className="flex flex-wrap items-center gap-3 text-base text-muted">
-                    <span
-                      className={`sticker px-3 py-1 text-sm font-semibold ${p.tag === "Demo" ? "sticker-white" : "sticker-blue"} ${i % 2 ? "rotate-2" : "-rotate-2"}`}
-                    >
-                      {p.tag === "Demo" ? "Demo · negocio inventado" : p.tag}
-                    </span>
-                    {p.kind}
-                  </p>
-                  <h3 id={`p-${p.id}`} data-rise className="mt-5 font-display text-[clamp(2.75rem,6vw,4.75rem)] uppercase leading-none">
+                  <h3 id={`p-${p.id}`} data-rise className="font-display text-[clamp(2.75rem,6vw,4.75rem)] uppercase leading-none">
                     {p.name}
                   </h3>
                   <p data-rise className="mt-5 max-w-[46ch] text-lg leading-relaxed text-ink/80">
@@ -151,7 +149,7 @@ export function Work() {
                       href={p.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 font-semibold text-white transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-accent"
+                      className="btn-sticker btn-sticker-ink group px-6 py-3.5"
                     >
                       Ver la web
                       <Icon name="arrow-up-right" className="size-5 transition-transform group-hover:rotate-45" />

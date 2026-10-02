@@ -74,7 +74,7 @@ export function Contact() {
           )}
         </div>
         <div data-card>
-          <div className="sticker sticker-white block rotate-[0.6deg] p-6 text-ink sm:p-8 md:p-10">
+          <div className="sticker sticker-white block !rounded-[1.75rem] rotate-[0.6deg] p-6 text-ink sm:p-8 md:p-10">
             <ContactForm />
           </div>
         </div>
