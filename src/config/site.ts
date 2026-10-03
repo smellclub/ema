@@ -109,12 +109,12 @@ export const site = {
       year: "2026",
       url: "https://smellclub-uy.vercel.app",
       summary:
-        "La tienda online de mi emprendimiento: perfumes árabes y de diseñador, con decants para probar antes de comprar. Acá aprendo con plata propia qué hace que alguien compre.",
-      features: ["Tienda online", "Carrito", "Botón a WhatsApp", "Marca propia"],
+        "La tienda online de mi emprendimiento: más de 80 perfumes árabes y de diseñador, con decants de 5 y 10 ml para probar antes de comprar el frasco. Acá aprendo con plata propia qué hace que alguien compre.",
+      features: ["Catálogo de 82 perfumes", "Decants de 5 y 10 ml", "Carrito", "Recomendaciones", "Botón a WhatsApp"],
       images: {
         mobile: "/trabajos/smell-club-mob.jpg",
         full: "/trabajos/smell-club-full.jpg",
-        fullHeight: 6483,
+        fullHeight: 7360,
       },
     },
   ] satisfies Project[],
