@@ -2,73 +2,75 @@
 
 import { useRef } from "react";
 import { site } from "@/config/site";
-import { useGSAP, prefersReducedMotion, slapIn } from "@/components/motion/gsap";
+import { useGSAP, prefersReducedMotion, revealTitle, riseIn } from "@/components/motion/gsap";
 import { requestDemo } from "@/lib/demo-bus";
 import { Icon } from "@/components/ui/Icon";
+import { SectionHead } from "@/components/ui/SectionHead";
 
-// Cada servicio es una etiqueta distinta: no todas iguales, como en una plancha real.
-const look = [
-  { tilt: "-rotate-2", place: "lg:col-span-7" },
-  { tilt: "rotate-[2.5deg]", place: "lg:col-span-5 lg:mt-16" },
-  { tilt: "rotate-1", place: "lg:col-span-5 lg:-mt-6" },
-  { tilt: "-rotate-[2.5deg]", place: "lg:col-span-7 lg:mt-10" },
-];
+/** La linterna de las tarjetas: le dice al CSS dónde está el mouse dentro de la tarjeta. */
+function track(e: React.PointerEvent<HTMLElement>) {
+  const r = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty("--x", `${e.clientX - r.left}px`);
+  e.currentTarget.style.setProperty("--y", `${e.clientY - r.top}px`);
+}
 
-/** Servicios: una plancha azul entera con etiquetas blancas. "Quiero esto" completa el formulario. */
+/** Servicios: un bloque azul entero con tarjetas blancas. "Quiero esto" completa el formulario. */
 export function Services() {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      slapIn("[data-service]", "[data-services]", { stagger: 0.12, start: "top 75%" });
+      revealTitle(root.current!.querySelectorAll("[data-title]"));
+      riseIn("[data-service]", "[data-services]", { stagger: 0.1, y: 60 });
     },
     { scope: root },
   );
 
   return (
-    <section ref={root} id="servicios" aria-labelledby="servicios-title" className="bg-accent text-white">
-      <div className="mx-auto max-w-[1600px] px-5 py-28 md:px-10 md:py-40">
-        <div className="flex flex-wrap items-end justify-between gap-8">
-          <h2 id="servicios-title" className="max-w-4xl font-display text-[clamp(3rem,10vw,6rem)] uppercase leading-[1.05]">
-            Qué puedo hacer{" "}
-            <span className="sticker sticker-white -rotate-2 whitespace-nowrap px-[0.2em] pt-[0.08em] text-accent">por vos</span>
-          </h2>
-          <p className="max-w-sm text-lg leading-relaxed text-white/85">
-            Elegí lo que te sirve y te paso un presupuesto cerrado. Sin letra chica.
-          </p>
-        </div>
+    <section ref={root} id="servicios" aria-labelledby="servicios-title" className="px-2 md:px-4">
+      <div className="mx-auto max-w-[1680px] rounded-[2rem] bg-accent text-white md:rounded-[2.5rem]">
+        <div className="mx-auto max-w-[1600px] px-5 py-24 md:px-10 md:py-36">
+          <SectionHead
+            id="servicios-title"
+            index="03"
+            eyebrow="Servicios"
+            dark
+            title="Qué puedo hacer por vos"
+            aside="Elegí lo que te sirve y te paso un presupuesto cerrado. Sin letra chica."
+          />
 
-        <ul data-services className="mt-20 grid gap-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-x-12 lg:gap-y-8">
-          {site.services.map((s, i) => (
-            <li key={s.id} className={look[i % look.length].place}>
-              <div data-service>
+          <ul data-services className="mt-16 grid gap-4 md:mt-20 md:grid-cols-2 md:gap-5">
+            {site.services.map((s, i) => (
+              <li key={s.id} data-service>
                 <div
-                  className={`sticker peel flex h-full flex-col !rounded-[1.75rem] bg-white p-7 text-ink [--peel-ground:var(--color-accent)] [--sticker-edge:7px] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:rotate-0 md:p-9 ${look[i % look.length].tilt}`}
+                  onPointerMove={track}
+                  className="spotlight group flex h-full flex-col rounded-[1.75rem] bg-white p-7 text-ink transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 md:p-10"
                 >
-                  <h3 className="font-display text-4xl uppercase leading-none md:text-5xl">{s.name}</h3>
-                  <p className="mt-4 max-w-[40ch] text-lg leading-relaxed text-ink/75">{s.description}</p>
+                  <div className="flex items-start justify-between gap-6">
+                    <h3 className="font-display text-4xl leading-none md:text-5xl">{s.name}</h3>
+                    <span className="font-display text-xl text-accent">0{i + 1}</span>
+                  </div>
+                  <p className="mt-4 max-w-[40ch] text-lg leading-relaxed text-muted">{s.description}</p>
                   <ul className="mt-6 flex flex-wrap gap-2">
                     {s.includes.map((inc) => (
-                      <li key={inc} className="inline-flex items-center gap-1.5 rounded-full bg-paper-soft px-3 py-1.5 text-sm font-medium">
+                      <li key={inc} className="chip">
                         <Icon name="check" className="size-4 text-accent" />
                         {inc}
                       </li>
                     ))}
                   </ul>
-                  <button
-                    type="button"
-                    onClick={() => requestDemo({ service: s.id })}
-                    className="btn-sticker group mt-8 w-fit px-6 py-3"
-                  >
-                    Quiero esto
-                    <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />
-                  </button>
+                  <div className="mt-auto pt-8">
+                    <button type="button" onClick={() => requestDemo({ service: s.id })} className="btn group/btn px-6 py-3">
+                      Quiero esto
+                      <Icon name="arrow-right" className="size-5 transition-transform group-hover/btn:translate-x-1" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

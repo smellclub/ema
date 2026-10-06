@@ -6,7 +6,7 @@ import { gsap, useGSAP, prefersReducedMotion } from "./gsap";
 
 const DONE_EVENT = "preloader:done";
 
-/** El hero espera esta señal para arrancar su animación de entrada. */
+/** La portada espera esta señal para arrancar su animación de entrada. */
 export function onPreloaderDone(cb: () => void) {
   if ((window as { __preloaderDone?: boolean }).__preloaderDone) {
     cb();
@@ -22,15 +22,15 @@ function finish() {
 }
 
 /**
- * Pantalla de carga: las letras de tu nombre caen como stickers, cuenta de 0 a 100
- * y la plancha se despega desde una esquina, como cuando sacás un sticker.
- * Solo aparece la primera vez por sesión (no molesta si volvés de otra página)
- * y nunca con "reducir movimiento".
+ * Pantalla de carga: una barra de navegador donde se "escribe" la dirección de la web,
+ * la barra de carga se llena y la pantalla sube como un telón (con una capa azul detrás).
+ * Dura menos de 2 segundos, solo aparece la primera vez por sesión y nunca con "reducir movimiento".
  */
 export function Preloader() {
   const root = useRef<HTMLDivElement>(null);
   const curtain = useRef<HTMLDivElement>(null);
   const [gone, setGone] = useState(false);
+  const address = site.siteUrl.replace("https://", "");
 
   useGSAP(
     () => {
@@ -47,31 +47,25 @@ export function Preloader() {
         return;
       }
 
-      const counter = { v: 0 };
-      const num = root.current!.querySelector<HTMLElement>("[data-count]")!;
+      const typed = { n: 0 };
+      const url = root.current!.querySelector<HTMLElement>("[data-url]")!;
       gsap
         .timeline({ onComplete: () => setGone(true) })
-        .from("[data-letter]", {
-          scale: 1.8,
-          rotate: (i: number) => (i % 2 ? 14 : -14),
-          autoAlpha: 0,
-          stagger: 0.045,
-          duration: 0.45,
-          ease: "back.out(2.6)",
-        })
-        .to(counter, {
-          v: 100,
-          duration: 1.3,
-          ease: "power2.inOut",
+        .from("[data-window]", { y: 30, autoAlpha: 0, scale: 0.96, duration: 0.5, ease: "expo.out" })
+        .to(typed, {
+          n: address.length,
+          duration: 0.7,
+          ease: "none",
           onUpdate: () => {
-            num.textContent = String(Math.round(counter.v)).padStart(3, "0");
+            url.textContent = address.slice(0, Math.round(typed.n));
           },
-        }, 0)
-        .to("[data-bar]", { scaleX: 1, duration: 1.3, ease: "power2.inOut" }, 0)
-        // La plancha se despega desde la esquina de abajo a la izquierda y sale volando.
-        .to(root.current, { rotate: -8, xPercent: 8, yPercent: -115, duration: 0.95, ease: "expo.in" }, "+=0.1")
-        .to(curtain.current, { rotate: -8, xPercent: 8, yPercent: -115, duration: 0.95, ease: "expo.in" }, "-=0.82")
-        .call(finish, [], "-=0.55");
+        })
+        .to("[data-bar]", { scaleX: 1, duration: 0.6, ease: "power2.inOut" })
+        .from("[data-name] > span", { yPercent: 110, stagger: 0.06, duration: 0.6, ease: "expo.out" }, "-=0.5")
+        // El telón sube; la capa azul va un poquito atrás, así se ve un "barrido" de color.
+        .to(root.current, { yPercent: -100, duration: 0.8, ease: "expo.inOut" }, "+=0.15")
+        .to(curtain.current, { yPercent: -100, duration: 0.8, ease: "expo.inOut" }, "-=0.68")
+        .call(finish, [], "-=0.5");
     },
     { scope: root },
   );
@@ -79,32 +73,32 @@ export function Preloader() {
   if (gone) return null;
   return (
     <>
-      <div ref={curtain} aria-hidden className="fixed -inset-[10%] z-[98] origin-top-right bg-accent" />
-      <div
-        ref={root}
-        aria-hidden
-        className="fixed inset-0 z-[99] flex origin-top-right flex-col justify-between bg-paper p-6 text-ink md:p-10"
-      >
-        <span className="text-sm font-semibold text-muted">Pegando stickers…</span>
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <div className="flex flex-wrap gap-x-[0.3em] font-display text-[16vw] uppercase leading-[1.05] md:text-[9vw]">
-            {/* Palabra por palabra, para que nunca se corte un nombre a la mitad. */}
-            {site.name.split(" ").map((word, w) => (
-              <span key={w} className={`flex ${w === 1 ? "text-accent" : ""}`}>
-                {word.split("").map((l, i) => (
-                  <span key={i} data-letter className="inline-block">
-                    {l}
-                  </span>
-                ))}
+      <div ref={curtain} aria-hidden className="fixed inset-0 z-[98] bg-accent" />
+      <div ref={root} aria-hidden className="fixed inset-0 z-[99] grid place-items-center bg-ink px-5 text-white">
+        <div className="w-full max-w-xl">
+          <div data-window className="overflow-hidden rounded-2xl bg-night shadow-[0_0_0_1px_rgb(255_255_255/0.08)]">
+            <div className="flex items-center gap-3 px-4 py-3">
+              <span className="flex gap-1.5">
+                <i className="size-2.5 rounded-full bg-hot" />
+                <i className="size-2.5 rounded-full bg-white/20" />
+                <i className="size-2.5 rounded-full bg-white/20" />
+              </span>
+              <span className="flex h-8 flex-1 items-center rounded-full bg-white/[0.07] px-4 text-sm text-white/80">
+                <span data-url />
+                <span className="ml-px h-4 w-px animate-pulse bg-white/80" />
+              </span>
+            </div>
+            <div className="h-0.5 bg-white/10">
+              <div data-bar className="h-full origin-left scale-x-0 bg-hot" />
+            </div>
+          </div>
+          <p data-name className="mt-8 flex flex-wrap gap-x-[0.25em] overflow-hidden font-display text-5xl md:text-7xl">
+            {site.name.split(" ").map((w, i) => (
+              <span key={w} className={`inline-block ${i === 1 ? "text-sky" : ""}`}>
+                {w}
               </span>
             ))}
-          </div>
-          <span data-count className="font-display text-5xl tabular-nums text-accent md:text-8xl">
-            000
-          </span>
-        </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-paper-soft">
-          <div data-bar className="h-full w-full origin-left scale-x-0 rounded-full bg-accent" />
+          </p>
         </div>
       </div>
     </>

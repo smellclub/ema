@@ -3,208 +3,256 @@
 import { useId, useRef, useState } from "react";
 import { site } from "@/config/site";
 import { onPreloaderDone } from "@/components/motion/Preloader";
-import { gsap, useGSAP, prefersReducedMotion } from "@/components/motion/gsap";
-import { useStickers } from "@/components/motion/useStickers";
+import { Magnetic } from "@/components/motion/Magnetic";
+import { gsap, useGSAP, prefersReducedMotion, revealTitle } from "@/components/motion/gsap";
 import { requestDemo } from "@/lib/demo-bus";
 import { Icon } from "@/components/ui/Icon";
-import { BallSticker, BurstSticker, RoundSticker } from "@/components/ui/Stickers";
 
-// Cada renglón del título es un vinilo distinto, con su propia inclinación.
-const lineStyle = [
-  { vinyl: "sticker-ink", tilt: "-rotate-2", indent: "" },
-  { vinyl: "sticker-white", tilt: "rotate-[1.5deg]", indent: "ml-[0.5em]" },
-  { vinyl: "sticker-blue", tilt: "-rotate-[4deg]", indent: "ml-[0.15em]" },
+/** Colores que el visitante puede probar en su demo. El primero es el de la casa. */
+const swatches = [
+  { name: "Azul", bg: "#2b44ff", fg: "#ffffff" },
+  { name: "Mandarina", bg: "#ff5c28", fg: "#ffffff" },
+  { name: "Verde", bg: "#0f7a4f", fg: "#ffffff" },
+  { name: "Negro", bg: "#0a0c18", fg: "#ffffff" },
 ];
 
+const perks = ["Demo gratis antes de pagar", "Rápida en el celular", "Lista para Google"];
+
+/** "Peluquería Sol" → "peluqueriasol": para armar la dirección de la demo. */
+function slug(text: string) {
+  return text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
 /**
- * Portada: la web es una plancha de stickers.
- * - El título son tres stickers que se despegan y se arrastran (en compu).
- * - A la derecha, escribís el nombre de tu negocio y se convierte en sticker en vivo:
- *   es la demo con tu marca que ofrezco, en chiquito. El botón te lleva al formulario ya completado.
+ * Portada. A la izquierda la promesa; a la derecha, sobre un bloque azul, una ventana de navegador
+ * con la web del visitante: escribe el nombre de su negocio, elige un color y la ve armarse en vivo.
+ * Es la demo con su marca que ofrezco, en chiquito. El botón lo lleva al formulario ya completado.
  */
 export function Hero() {
   const root = useRef<HTMLElement>(null);
+  const demo = useRef<HTMLDivElement>(null);
   const [business, setBusiness] = useState("");
+  const [color, setColor] = useState(0);
   const inputId = useId();
   const { hero } = site;
 
-  // Los renglones grandes solo se arrastran con mouse (en celular trabarían el scroll).
-  const big = useStickers(root, { media: "(min-width: 1024px) and (pointer: fine)", selector: "[data-drag-big]" });
-  const small = useStickers(root, { selector: "[data-drag]" });
-
   useGSAP(
     () => {
-      if (prefersReducedMotion()) return;
       const q = gsap.utils.selector(root);
+      if (prefersReducedMotion()) {
+        q("[data-mark]").forEach((m) => m.setAttribute("data-mark", "on"));
+        return;
+      }
       gsap.set(q("[data-in]"), { autoAlpha: 0 });
       const off = onPreloaderDone(() => {
+        revealTitle(q("[data-title]"), { now: true });
+        gsap.delayedCall(0.7, () => q("[data-mark]").forEach((m) => m.setAttribute("data-mark", "on")));
         gsap
-          .timeline({ defaults: { ease: "back.out(2.4)" } })
-          .fromTo(
-            q("[data-in='line']"),
-            { autoAlpha: 0, scale: 1.5, rotate: (i: number) => (i % 2 ? 10 : -10) },
-            { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.55, stagger: 0.14 },
-          )
-          .fromTo(q("[data-in='rise']"), { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.08 }, "-=0.2")
-          .fromTo(
-            q("[data-in='pop']"),
-            { autoAlpha: 0, scale: 0.2, rotate: -40 },
-            { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.6, stagger: 0.09 },
-            "-=0.5",
-          );
+          .timeline({ delay: 0.25, defaults: { ease: "expo.out" } })
+          .fromTo(q("[data-in='rise']"), { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.08 })
+          // El bloque azul se "abre" de abajo hacia arriba y la ventana entra encima.
+          .fromTo(q("[data-in='panel']"), { autoAlpha: 1, clipPath: "inset(100% 0% 0% 0% round 2rem)" }, { clipPath: "inset(0% 0% 0% 0% round 2rem)", duration: 1.1, ease: "expo.inOut" }, 0)
+          .fromTo(q("[data-in='window']"), { autoAlpha: 0, y: 60, rotate: -3 }, { autoAlpha: 1, y: 0, rotate: 0, duration: 1.1 }, 0.55);
       });
-      return off;
+
+      // En compu, la ventana se inclina un poco siguiendo al mouse (efecto 3D sutil).
+      const el = demo.current;
+      if (!el || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return off;
+      const rx = gsap.quickTo(el, "rotationX", { duration: 0.8, ease: "power3" });
+      const ry = gsap.quickTo(el, "rotationY", { duration: 0.8, ease: "power3" });
+      const panel = el.parentElement!;
+      const move = (e: PointerEvent) => {
+        const r = panel.getBoundingClientRect();
+        ry(((e.clientX - r.left) / r.width - 0.5) * 8);
+        rx(-((e.clientY - r.top) / r.height - 0.5) * 8);
+      };
+      const reset = () => {
+        rx(0);
+        ry(0);
+      };
+      panel.addEventListener("pointermove", move);
+      panel.addEventListener("pointerleave", reset);
+      return () => {
+        off();
+        panel.removeEventListener("pointermove", move);
+        panel.removeEventListener("pointerleave", reset);
+      };
     },
     { scope: root },
   );
 
   const name = business.trim() || "Tu negocio";
-  // Cuanto más largo el nombre, más chica la letra, para que siempre entre en el sticker.
-  const fontSize = `${Math.max(1.5, Math.min(3.4, 26 / Math.max(name.length, 7))).toFixed(2)}rem`;
+  const address = `${slug(business) || "tunegocio"}.com.uy`;
+  const c = swatches[color];
+  // Cuanto más largo el nombre, más chica la letra, para que siempre entre.
+  const fontSize = `${Math.max(1.6, Math.min(3.6, 30 / Math.max(name.length, 8))).toFixed(2)}rem`;
 
   return (
     <section
       ref={root}
       id="inicio"
       aria-labelledby="hero-title"
-      className="relative isolate overflow-hidden px-5 pb-20 pt-28 md:px-10 md:pt-32 lg:flex lg:min-h-svh lg:items-center lg:pb-16"
+      className="relative px-5 pb-16 pt-28 md:px-10 md:pt-32 lg:flex lg:min-h-svh lg:items-center lg:pb-14"
     >
-      <div className="mx-auto grid w-full max-w-[1600px] items-center gap-14 lg:grid-cols-[1.25fr_1fr] lg:gap-10">
+      <div className="mx-auto grid w-full max-w-[1600px] items-center gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-12">
         <div>
+          <p data-in="rise" className="inline-flex items-center gap-2.5 rounded-full border border-line bg-white px-3.5 py-1.5 text-sm font-semibold">
+            <span className="relative flex size-2.5">
+              <span className="ping absolute inline-flex size-full rounded-full bg-hot opacity-70" />
+              <span className="relative inline-flex size-2.5 rounded-full bg-hot" />
+            </span>
+            {site.availability}
+          </p>
+
           <h1
             id="hero-title"
-            className="font-display text-[clamp(3.1rem,14.5vw,5.5rem)] uppercase leading-none sm:text-[clamp(4rem,11vw,7rem)] lg:text-[clamp(4.5rem,7.2vw,7.5rem)]"
+            data-title
+            data-mark="off"
+            className="mt-7 font-display text-[clamp(3.2rem,13vw,5.5rem)] leading-[0.95] sm:text-[clamp(4rem,10vw,7rem)] lg:text-[clamp(4.5rem,6.6vw,7.25rem)]"
           >
-            {hero.lines.map((line, i) => (
-              <span key={line} data-wrap className={`relative mt-[0.2em] block w-fit first:mt-0 ${lineStyle[i].indent}`}>
-                <span data-slot aria-hidden className="kiss-cut invisible absolute inset-0 opacity-0" />
-                <span data-in="line" className="block">
-                  <span
-                    data-drag-big
-                    data-cursor="Despegá"
-                    className={`sticker ${lineStyle[i].vinyl} ${lineStyle[i].tilt} touch-manipulation select-none px-[0.22em] pb-[0.06em] pt-[0.14em] lg:cursor-grab`}
-                  >
-                    {line}
-                  </span>
-                </span>
-              </span>
-            ))}
+            {hero.lines.slice(0, -1).join(" ")}{" "}
+            <span className="marker text-accent">
+              {hero.lines.at(-1)}
+            </span>
           </h1>
 
-          <p data-in="rise" className="mt-10 max-w-md text-lg leading-relaxed text-muted md:text-xl">
+          <p data-in="rise" className="mt-8 max-w-lg text-lg leading-relaxed text-muted md:text-xl">
             {hero.intro}
           </p>
 
-          <div data-in="rise" className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <a href="#trabajos" className="group inline-flex items-center gap-2 text-lg font-semibold underline decoration-accent decoration-2 underline-offset-[6px] hover:decoration-4">
-              Ver mis trabajos
-              <Icon name="arrow-down" className="size-5 transition-transform group-hover:translate-y-1" />
-            </a>
-            <button
-              type="button"
-              onClick={() => {
-                big.reset();
-                small.reset();
-              }}
-              className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-muted transition-colors hover:bg-paper-soft hover:text-ink"
+          <div data-in="rise" className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <Magnetic>
+              <a href="#trabajos" className="btn btn-ink group px-7 py-4 text-lg">
+                Ver mis trabajos
+                <Icon name="arrow-down" className="size-5 transition-transform group-hover:translate-y-0.5" />
+              </a>
+            </Magnetic>
+            <a
+              href={site.links.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 text-lg font-semibold underline decoration-accent decoration-2 underline-offset-[6px] hover:decoration-hot"
             >
-              <Icon name="reset" className="size-4" />
-              Volver a pegar los stickers
-            </button>
+              <Icon name="whatsapp" className="size-5 text-accent" />
+              Escribime por WhatsApp
+            </a>
           </div>
+
+          <ul data-in="rise" className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-[0.95rem] font-medium text-ink/75">
+            {perks.map((p) => (
+              <li key={p} className="inline-flex items-center gap-2">
+                <Icon name="check" className="size-4 text-accent" />
+                {p}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {/* El generador de stickers: la demo con tu marca, en chiquito. */}
-        <form
-          data-in="rise"
-          onSubmit={(e) => {
-            e.preventDefault();
-            requestDemo({ business: business.trim() });
-          }}
-          className="relative mx-auto w-full max-w-lg rounded-[2rem] border-2 border-dashed border-line bg-paper p-6 sm:p-8"
+        {/* La demo en vivo, sobre un bloque azul grande (el color fuerte de la marca, ocupando espacio de verdad). */}
+        <div
+          data-in="panel"
+          className="relative rounded-[2rem] bg-accent px-5 pb-6 pt-10 [perspective:1200px] sm:px-10 sm:pb-10 sm:pt-14"
         >
-          <div className="grid min-h-52 place-items-center px-2 py-8 sm:min-h-60">
-            <div aria-live="polite" className="sticker sticker-blue max-w-full rotate-[3deg] px-6 pb-4 pt-5 text-center">
-              <p className="break-words font-display leading-[1.05]" style={{ fontSize }}>
-                {name}
-              </p>
-              <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80">Web nueva · demo gratis</p>
+          {/* Grilla de puntos sobre el azul: textura sin ruido. */}
+          <div
+            aria-hidden
+            className="absolute inset-0 rounded-[2rem] opacity-30 [background-image:radial-gradient(rgb(255_255_255/0.35)_1px,transparent_1px)] [background-size:22px_22px]"
+          />
+          <p className="relative mb-5 text-sm font-semibold uppercase tracking-[0.12em] text-white/85">Probalo: tu web en vivo</p>
+
+          <div ref={demo} data-in="window" className="relative [transform-style:preserve-3d]">
+            <div className="float">
+              <div className="browser">
+                <div className="browser-bar">
+                  <i />
+                  <i />
+                  <i />
+                  <span className="ml-3 flex h-7 flex-1 items-center truncate rounded-full bg-white px-3 text-xs text-muted">
+                    <svg viewBox="0 0 24 24" aria-hidden className="mr-1.5 size-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <rect x="5" y="11" width="14" height="10" rx="2" />
+                      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+                    </svg>
+                    {address}
+                  </span>
+                </div>
+                {/* La "web" del visitante: cambia de color y nombre al instante. */}
+                <div aria-live="polite" className="p-5 transition-colors duration-500 sm:p-7" style={{ background: c.bg, color: c.fg }}>
+                  <div className="flex items-center justify-between text-[0.7rem] font-semibold opacity-85">
+                    <span className="truncate">{name}</span>
+                    <span className="hidden gap-3 sm:flex">
+                      <span>Inicio</span>
+                      <span>Servicios</span>
+                      <span>Contacto</span>
+                    </span>
+                  </div>
+                  <p className="mt-8 break-words font-display leading-[0.95]" style={{ fontSize }}>
+                    {name}
+                  </p>
+                  <p className="mt-3 max-w-[24ch] text-sm opacity-85">Reservá, comprá o escribinos en un toque, desde el celular.</p>
+                  <div className="mt-5 flex gap-2">
+                    <span className="rounded-full bg-white px-4 py-2 text-xs font-bold" style={{ color: c.bg === "#0a0c18" ? "#0a0c18" : c.bg }}>
+                      Reservá ahora
+                    </span>
+                    <span className="rounded-full px-4 py-2 text-xs font-bold shadow-[inset_0_0_0_1.5px_currentColor]">WhatsApp</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2 bg-white p-3">
+                  {[0, 1, 2].map((i) => (
+                    <span key={i} className="h-10 rounded-lg bg-paper-soft sm:h-14" />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          <label htmlFor={inputId} className="mt-6 block text-base font-semibold">
-            ¿Cómo se llama tu negocio?
-          </label>
-          <input
-            id={inputId}
-            value={business}
-            onChange={(e) => setBusiness(e.target.value.slice(0, 40))}
-            maxLength={40}
-            autoComplete="organization"
-            placeholder="Ej: Peluquería Sol"
-            className="field"
-          />
-          <button
-            type="submit"
-            className="btn-sticker group mt-5 w-full px-7 py-4 text-lg"
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              requestDemo({ business: business.trim() });
+            }}
+            className="relative mt-7 rounded-2xl bg-white p-4 shadow-[0_20px_40px_-24px_rgb(10_12_24/0.6)] sm:p-5"
           >
-            Quiero mi demo
-            <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />
-          </button>
-          <p className="mt-3 text-center text-sm text-muted">Te la muestro antes de que pagues nada.</p>
-          {/* "Demo gratis" va pegado en la esquina del panel: arriba en celular, abajo en compu. */}
-          <span data-wrap aria-hidden className="absolute -right-3 -top-12 w-24 sm:w-28 lg:-bottom-14 lg:-right-12 lg:top-auto lg:w-36">
-            <span data-in="pop" className="block">
-              <span data-drag data-cursor="Despegá" className="block cursor-grab touch-none">
-                <BurstSticker className="w-full text-base sm:text-lg lg:text-xl">
-                  Demo
-                  <br />
-                  gratis
-                </BurstSticker>
-              </span>
-            </span>
-          </span>
-        </form>
-      </div>
-
-      {/* Stickers sueltos. Se arrastran con mouse o con el dedo. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-0">
-        <span data-wrap className="absolute right-[5%] top-[11.5rem] w-24 sm:right-[8%] sm:top-[9rem] sm:w-28 lg:right-[44%] lg:top-[16%] lg:w-32">
-          <span data-in="pop" className="block">
-            <span data-drag data-cursor="Despegá" className="pointer-events-auto block cursor-grab touch-none">
-              <RoundSticker text="HECHO EN URUGUAY • HECHO EN URUGUAY • " className="w-full">
-                <svg viewBox="0 0 40 40" className="size-9 sm:size-11" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
-                  <circle cx="20" cy="20" r="7" fill="currentColor" />
-                  <path d="M20 3v5M20 32v5M3 20h5M32 20h5M8 8l3.5 3.5M28.5 28.5 32 32M32 8l-3.5 3.5M11.5 28.5 8 32" />
-                </svg>
-              </RoundSticker>
-            </span>
-          </span>
-        </span>
-
-        <span data-wrap className="absolute right-[4%] top-[33rem] sm:hidden lg:right-auto lg:left-[54%] lg:top-[11%] lg:block">
-          <span data-in="pop" className="block">
-            <span data-drag data-cursor="Despegá" className="sticker sticker-ink pointer-events-auto block -rotate-6 cursor-grab touch-none px-4 py-2 text-base font-semibold">
-              Rápida en el celu
-            </span>
-          </span>
-        </span>
-
-        <span data-wrap className="absolute right-[6%] top-[18.5rem] w-14 sm:hidden xl:right-auto xl:top-auto xl:bottom-[12%] xl:left-[38%] xl:block xl:w-20">
-          <span data-in="pop" className="block">
-            <span data-drag data-cursor="Despegá" className="pointer-events-auto block cursor-grab touch-none">
-              <BallSticker className="w-full" />
-            </span>
-          </span>
-        </span>
-
-        <span data-wrap className="absolute right-[4%] top-[18%] hidden lg:block">
-          <span data-in="pop" className="block">
-            <span data-drag data-cursor="Despegá" className="sticker sticker-white pointer-events-auto block rotate-3 cursor-grab touch-none px-4 py-2 text-base font-semibold">
-              Cero plantillas
-            </span>
-          </span>
-        </span>
+            <div className="flex items-center justify-between gap-4">
+              <label htmlFor={inputId} className="text-base font-semibold">
+                ¿Cómo se llama tu negocio?
+              </label>
+              <div role="radiogroup" aria-label="Color de tu web" className="flex gap-1.5">
+                {swatches.map((s, i) => (
+                  <button
+                    key={s.name}
+                    type="button"
+                    role="radio"
+                    aria-checked={color === i}
+                    aria-label={s.name}
+                    onClick={() => setColor(i)}
+                    className={`size-6 rounded-full transition-transform hover:scale-110 ${color === i ? "ring-2 ring-ink ring-offset-2" : ""}`}
+                    style={{ background: s.bg }}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="mt-1 flex flex-col gap-3 sm:flex-row">
+              <input
+                id={inputId}
+                value={business}
+                onChange={(e) => setBusiness(e.target.value.slice(0, 40))}
+                maxLength={40}
+                autoComplete="organization"
+                placeholder="Ej: Peluquería Sol"
+                className="field"
+              />
+              <button type="submit" className="btn group shrink-0 px-6 py-3.5 sm:mt-2">
+                Quiero mi demo
+                <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />
+              </button>
+            </div>
+            <p className="mt-3 text-sm text-muted">Te la muestro con tu marca antes de que pagues nada.</p>
+          </form>
+        </div>
       </div>
     </section>
   );

@@ -59,8 +59,8 @@ export function ContactForm() {
   if (state.status === "success") {
     return (
       <div role="status" className="flex min-h-96 flex-col items-start justify-center">
-        <span className="sticker sticker-blue -rotate-3 px-4 pb-1 pt-2 font-display text-2xl uppercase">¡Llegó!</span>
-        <p className="mt-6 font-display text-5xl uppercase leading-[1.05] md:text-6xl">
+        <span className="inline-flex items-center gap-2 rounded-full bg-accent-soft px-4 py-1.5 font-semibold text-accent"><Icon name="check" className="size-4" />¡Llegó!</span>
+        <p className="mt-6 font-display text-5xl leading-[0.98] md:text-6xl">
           Gracias{state.name ? `, ${state.name}` : ""}.
         </p>
         <p className="mt-6 max-w-md text-lg text-ink/75">
@@ -197,7 +197,7 @@ export function ContactForm() {
                 href={site.links.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-[#9fb0ff] underline underline-offset-4"
+                className="font-semibold text-sky underline underline-offset-4"
               >
                 Abrir WhatsApp
               </a>
@@ -209,7 +209,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={pending}
-        className="btn-sticker group w-full px-8 py-5 text-lg md:w-auto md:justify-self-start"
+        className="btn group w-full px-8 py-5 text-lg md:w-auto md:justify-self-start"
       >
         {pending ? "Enviando…" : "Enviar mensaje"}
         <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />

@@ -2,13 +2,12 @@
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Draggable } from "gsap/Draggable";
-import { InertiaPlugin } from "gsap/InertiaPlugin";
+import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
 
 // Registramos los plugins una sola vez para toda la web.
-// Draggable + InertiaPlugin: los stickers se arrastran y, si los soltás con envión, siguen de largo un poco.
-gsap.registerPlugin(ScrollTrigger, Draggable, InertiaPlugin, useGSAP);
+// SplitText parte los títulos en renglones para que suban "desde atrás de una máscara".
+gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
 /** true si la persona pidió "reducir movimiento" en su sistema (accesibilidad). */
 export function prefersReducedMotion() {
@@ -16,19 +15,44 @@ export function prefersReducedMotion() {
 }
 
 /**
- * "Slap": el sticker cae sobre la plancha desde grande, con un rebote y un giro.
- * Es la entrada de todos los stickers (el texto común solo sube y aparece), así todo se siente parte de lo mismo.
+ * Títulos: cada renglón sube desde abajo, recortado por una máscara invisible.
+ * Es la entrada "de estudio" de toda la web. autoSplit vuelve a partir si cambia el ancho
+ * (o cuando terminan de cargar las fuentes), así los renglones nunca quedan mal cortados.
  */
-export function slapIn(targets: gsap.TweenTarget, trigger: Element | string, opts: { stagger?: number; start?: string } = {}) {
+export function revealTitle(
+  targets: gsap.DOMTarget,
+  opts: { now?: boolean; delay?: number; trigger?: Element | string; start?: string } = {},
+) {
+  return SplitText.create(targets, {
+    type: "lines",
+    mask: "lines",
+    autoSplit: true,
+    onSplit(self) {
+      return gsap.from(self.lines, {
+        yPercent: 110,
+        duration: 1,
+        ease: "expo.out",
+        stagger: 0.09,
+        delay: opts.delay ?? 0,
+        // "now": arranca ya (la portada). Si no, cuando el título entra en pantalla.
+        scrollTrigger: opts.now
+          ? undefined
+          : { trigger: opts.trigger ?? self.elements[0], start: opts.start ?? "top 85%", once: true },
+      });
+    },
+  });
+}
+
+/** El resto del texto y las tarjetas: suben un poco y aparecen. */
+export function riseIn(targets: gsap.TweenTarget, trigger: Element | string, opts: { stagger?: number; start?: string; y?: number } = {}) {
   return gsap.from(targets, {
-    scale: 1.45,
-    rotate: (i: number) => (i % 2 ? 9 : -9),
+    y: opts.y ?? 36,
     autoAlpha: 0,
-    duration: 0.55,
-    ease: "back.out(2.4)",
-    stagger: opts.stagger ?? 0.09,
+    duration: 0.9,
+    ease: "expo.out",
+    stagger: opts.stagger ?? 0.08,
     scrollTrigger: { trigger, start: opts.start ?? "top 80%", once: true },
   });
 }
 
-export { gsap, ScrollTrigger, Draggable, useGSAP };
+export { gsap, ScrollTrigger, SplitText, useGSAP };

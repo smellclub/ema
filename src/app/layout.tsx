@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bagel_Fat_One, Familjen_Grotesk } from "next/font/google";
+import { Bricolage_Grotesque, Familjen_Grotesk } from "next/font/google";
 import { site } from "@/config/site";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { Cursor } from "@/components/motion/Cursor";
@@ -7,9 +7,9 @@ import "./globals.css";
 
 // next/font baja las fuentes en el build y las sirve desde nuestro dominio:
 // el navegador nunca le pide nada a Google (más rápido, más privado y CSP más cerrada).
-// Bagel Fat One: letras gordas y redondeadas, como las de un sticker troquelado.
-// latin-ext trae las tildes y la ñ.
-const display = Bagel_Fat_One({ variable: "--font-bagel", subsets: ["latin", "latin-ext"], weight: "400" });
+// Bricolage Grotesque: títulos con carácter pero serios, la que usan muchos estudios de diseño.
+// Es "variable": un solo archivo trae todos los grosores. latin-ext trae las tildes y la ñ.
+const display = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin", "latin-ext"], axes: ["opsz"] });
 // Familjen Grotesk: para leer cómodo, con un poco más de carácter que una de sistema.
 const sans = Familjen_Grotesk({ variable: "--font-familjen", subsets: ["latin", "latin-ext"] });
 
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#fafaf7",
   colorScheme: "light",
 };
 
