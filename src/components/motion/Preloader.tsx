@@ -22,15 +22,13 @@ function finish() {
 }
 
 /**
- * Pantalla de carga: una barra de navegador donde se "escribe" la dirección de la web,
- * la barra de carga se llena y la pantalla sube como un telón (con una capa azul detrás).
- * Dura menos de 2 segundos, solo aparece la primera vez por sesión y nunca con "reducir movimiento".
+ * Pantalla de carga: el nombre aparece letra por letra, un contador va de 0 a 100
+ * y el telón negro sube con el borde de abajo curvo, que se endereza mientras sale.
+ * Dura menos de 2,5 segundos, solo aparece la primera vez por sesión y nunca con "reducir movimiento".
  */
 export function Preloader() {
   const root = useRef<HTMLDivElement>(null);
-  const curtain = useRef<HTMLDivElement>(null);
   const [gone, setGone] = useState(false);
-  const address = site.siteUrl.replace("https://", "");
 
   useGSAP(
     () => {
@@ -47,60 +45,70 @@ export function Preloader() {
         return;
       }
 
-      const typed = { n: 0 };
-      const url = root.current!.querySelector<HTMLElement>("[data-url]")!;
+      const counter = { v: 0 };
+      const num = root.current!.querySelector<HTMLElement>("[data-count]")!;
       gsap
         .timeline({ onComplete: () => setGone(true) })
-        .from("[data-window]", { y: 30, autoAlpha: 0, scale: 0.96, duration: 0.5, ease: "expo.out" })
-        .to(typed, {
-          n: address.length,
-          duration: 0.7,
-          ease: "none",
-          onUpdate: () => {
-            url.textContent = address.slice(0, Math.round(typed.n));
+        .from("[data-letter]", { yPercent: 115, duration: 0.9, ease: "expo.out", stagger: 0.035 })
+        .to(
+          counter,
+          {
+            v: 100,
+            duration: 1.4,
+            ease: "power3.inOut",
+            onUpdate: () => {
+              num.textContent = String(Math.round(counter.v)).padStart(3, "0");
+            },
           },
-        })
-        .to("[data-bar]", { scaleX: 1, duration: 0.6, ease: "power2.inOut" })
-        .from("[data-name] > span", { yPercent: 110, stagger: 0.06, duration: 0.6, ease: "expo.out" }, "-=0.5")
-        // El telón sube; la capa azul va un poquito atrás, así se ve un "barrido" de color.
-        .to(root.current, { yPercent: -100, duration: 0.8, ease: "expo.inOut" }, "+=0.15")
-        .to(curtain.current, { yPercent: -100, duration: 0.8, ease: "expo.inOut" }, "-=0.68")
-        .call(finish, [], "-=0.5");
+          0.1,
+        )
+        .to("[data-bar]", { scaleX: 1, duration: 1.4, ease: "power3.inOut" }, 0.1)
+        .to("[data-letter], [data-count], [data-meta]", { yPercent: -115, duration: 0.6, ease: "expo.in", stagger: 0.012 }, "+=0.1")
+        .to(root.current, { yPercent: -100, duration: 1, ease: "expo.inOut" }, "-=0.2")
+        .to("[data-curve]", { attr: { d: "M0 0 Q50 0 100 0 L100 0 L0 0 Z" }, duration: 1, ease: "expo.inOut" }, "<")
+        .call(finish, [], "-=0.55");
     },
     { scope: root },
   );
 
   if (gone) return null;
   return (
-    <>
-      <div ref={curtain} aria-hidden className="fixed inset-0 z-[98] bg-accent" />
-      <div ref={root} aria-hidden className="fixed inset-0 z-[99] grid place-items-center bg-ink px-5 text-white">
-        <div className="w-full max-w-xl">
-          <div data-window className="overflow-hidden rounded-2xl bg-night shadow-[0_0_0_1px_rgb(255_255_255/0.08)]">
-            <div className="flex items-center gap-3 px-4 py-3">
-              <span className="flex gap-1.5">
-                <i className="size-2.5 rounded-full bg-hot" />
-                <i className="size-2.5 rounded-full bg-white/20" />
-                <i className="size-2.5 rounded-full bg-white/20" />
-              </span>
-              <span className="flex h-8 flex-1 items-center rounded-full bg-white/[0.07] px-4 text-sm text-white/80">
-                <span data-url />
-                <span className="ml-px h-4 w-px animate-pulse bg-white/80" />
-              </span>
-            </div>
-            <div className="h-0.5 bg-white/10">
-              <div data-bar className="h-full origin-left scale-x-0 bg-hot" />
-            </div>
-          </div>
-          <p data-name className="mt-8 flex flex-wrap gap-x-[0.25em] overflow-hidden font-display text-5xl md:text-7xl">
-            {site.name.split(" ").map((w, i) => (
-              <span key={w} className={`inline-block ${i === 1 ? "text-sky" : ""}`}>
-                {w}
+    <div ref={root} aria-hidden className="fixed inset-0 z-[99] bg-ink text-paper">
+      <div className="flex h-full flex-col justify-between p-6 md:p-10">
+        <div className="flex justify-between overflow-hidden text-sm text-paper/60">
+          <span data-meta className="block">
+            {site.role}
+          </span>
+          <span data-meta className="block">
+            {site.location}
+          </span>
+        </div>
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <p className="flex flex-wrap gap-x-[0.25em] font-serif text-[17vw] leading-[0.9] md:text-[10vw]">
+            {site.name.split(" ").map((word, w) => (
+              <span key={w} className={`flex overflow-hidden pb-[0.08em] ${w === 1 ? "italic text-sky" : ""}`}>
+                {word.split("").map((l, i) => (
+                  <span key={i} data-letter className="inline-block">
+                    {l}
+                  </span>
+                ))}
               </span>
             ))}
           </p>
+          <span className="overflow-hidden">
+            <span data-count className="block font-serif text-6xl tabular-nums md:text-8xl">
+              000
+            </span>
+          </span>
+        </div>
+        <div className="h-px w-full bg-paper/15">
+          <div data-bar className="h-full w-full origin-left scale-x-0 bg-paper" />
         </div>
       </div>
-    </>
+      {/* El borde curvo de abajo del telón: se endereza mientras sube. */}
+      <svg viewBox="0 0 100 10" preserveAspectRatio="none" className="absolute left-0 top-full h-[12vh] w-full fill-ink">
+        <path data-curve d="M0 0 Q50 20 100 0 L100 0 L0 0 Z" />
+      </svg>
+    </div>
   );
 }

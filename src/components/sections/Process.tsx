@@ -2,80 +2,98 @@
 
 import { useRef } from "react";
 import { site } from "@/config/site";
-import { gsap, useGSAP, prefersReducedMotion, revealTitle } from "@/components/motion/gsap";
-import { SectionHead } from "@/components/ui/SectionHead";
+import { gsap, useGSAP, prefersReducedMotion, revealTitle, riseIn } from "@/components/motion/gsap";
 
 /**
- * Cómo trabajo: una línea se dibuja con el scroll y cada número se "enciende" (se pinta de azul)
- * cuando la línea llega. El paso de la demo lleva la etiqueta "Gratis".
+ * Cómo trabajo. En compu la sección se queda fija: a la izquierda un número gigante que rueda
+ * (01, 02, 03, 04) y a la derecha cada paso entra mientras el anterior se va, con una barra de avance.
+ * En celular (o con "reducir movimiento") es una lista de cuatro pasos.
  */
 export function Process() {
   const root = useRef<HTMLElement>(null);
+  const steps = site.process;
 
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      revealTitle(root.current!.querySelectorAll("[data-title]"));
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: "[data-steps]", start: "top 75%", end: "bottom 60%", scrub: 0.5 },
+      const q = gsap.utils.selector(root);
+      revealTitle(q("[data-title]"));
+
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 1024px)", () => {
+        const stage = q("[data-stage]")[0];
+        stage.dataset.h = "on";
+        const items = q("[data-step]");
+        gsap.set(items.slice(1), { autoAlpha: 0, yPercent: 40 });
+        const tl = gsap.timeline({
+          defaults: { ease: "power3.inOut", duration: 1 },
+          scrollTrigger: {
+            trigger: stage,
+            start: "top top",
+            end: `+=${(steps.length - 1) * 70}%`,
+            pin: true,
+            scrub: 0.6,
+            snap: { snapTo: 1 / (steps.length - 1), duration: 0.6, ease: "power2.inOut" },
+          },
+        });
+        items.slice(1).forEach((item, i) => {
+          tl.to(items[i], { autoAlpha: 0, yPercent: -40 })
+            .to(item, { autoAlpha: 1, yPercent: 0 }, "<")
+            .to(q("[data-digits]"), { yPercent: (-100 * (i + 1)) / steps.length }, "<");
+        });
+        tl.fromTo(q("[data-bar]"), { scaleX: 1 / steps.length }, { scaleX: 1, ease: "none", duration: tl.duration() }, 0);
+        return () => {
+          delete stage.dataset.h;
+        };
       });
-      const desktop = window.matchMedia("(min-width: 768px)").matches;
-      tl.from("[data-line]", { [desktop ? "scaleX" : "scaleY"]: 0, ease: "none", duration: 4 });
-      gsap.utils.toArray<HTMLElement>("[data-step]").forEach((step, i) => {
-        tl.fromTo(
-          step.querySelector("[data-dot]"),
-          { backgroundColor: "#ffffff", color: "#0a0c18", scale: 0.8 },
-          { backgroundColor: "#2b44ff", color: "#ffffff", scale: 1, duration: 0.4, ease: "back.out(3)" },
-          i,
-        );
-        tl.from(step.querySelector("[data-copy]"), { autoAlpha: 0.3, y: 24, duration: 0.8, ease: "power2.out" }, i + 0.1);
+      mm.add("(max-width: 1023px)", () => {
+        riseIn(q("[data-step]"), q("[data-steps]")[0], { stagger: 0.1 });
       });
+      return () => mm.revert();
     },
     { scope: root },
   );
 
   return (
-    <section ref={root} id="proceso" aria-labelledby="proceso-title">
-      <div className="mx-auto max-w-[1600px] px-5 py-28 md:px-10 md:py-40">
-        <SectionHead
-          id="proceso-title"
-          index="04"
-          eyebrow="Proceso"
-          title={
-            <>
-              De la idea a <span className="text-accent">online</span>
-            </>
-          }
-          aside="Cuatro pasos claros. Ves tu web antes de pagar y opinás en cada etapa."
-        />
+    <section ref={root} id="proceso" aria-labelledby="proceso-title" className="border-t border-line">
+      <div data-stage className="group/stage data-[h=on]:flex data-[h=on]:h-svh data-[h=on]:flex-col data-[h=on]:justify-center">
+        <div className="mx-auto w-full max-w-[1600px] px-5 py-28 md:px-10 md:py-40 group-data-[h=on]/stage:py-0">
+          <p className="eyebrow text-muted">05 — Proceso</p>
+          <h2 id="proceso-title" data-title className="mt-6 font-serif text-[clamp(3rem,7vw,6.5rem)] leading-[0.92]">
+            De la idea a <em className="text-accent">online</em>
+          </h2>
 
-        <ol data-steps className="relative mt-20 grid gap-12 md:grid-cols-4 md:gap-8">
-          {/* La línea: vertical en celular, horizontal en compu. Debajo, una línea gris que marca el recorrido. */}
-          <div aria-hidden className="absolute left-[27px] top-0 h-full border-l-2 border-line md:left-0 md:top-[29px] md:h-0 md:w-full md:border-l-0 md:border-t-2" />
-          <div
-            data-line
-            aria-hidden
-            className="absolute left-[27px] top-0 h-full origin-top border-l-2 border-accent md:left-0 md:top-[29px] md:h-0 md:w-full md:origin-left md:border-l-0 md:border-t-2"
-          />
-          {site.process.map((step, i) => (
-            <li key={step.title} data-step className="relative pl-20 md:pl-0 md:pt-24">
-              <span
-                data-dot
-                aria-hidden
-                className="absolute left-0 top-0 grid size-14 place-items-center rounded-full border-2 border-accent bg-accent font-display text-xl text-white md:size-[3.75rem]"
-              >
-                0{i + 1}
-              </span>
-              <div data-copy>
-                <h3 className="flex flex-wrap items-center gap-3 font-display text-3xl leading-none md:text-[2.1rem]">
-                  {step.title}
-                  {i === 1 && <span className="rounded-full bg-hot px-2.5 py-1 font-sans text-sm font-bold tracking-normal text-ink">Gratis</span>}
-                </h3>
-                <p className="mt-3 max-w-xs text-lg leading-relaxed text-muted">{step.text}</p>
+          <div className="mt-16 grid gap-10 group-data-[h=on]/stage:grid-cols-[1fr_1.2fr] group-data-[h=on]/stage:items-center">
+            {/* El número que rueda: una tira de números dentro de una ventana de un renglón. */}
+            <div aria-hidden className="hidden h-[0.9em] overflow-hidden font-serif text-[clamp(10rem,20vw,20rem)] leading-[0.9] text-accent group-data-[h=on]/stage:block">
+              <div data-digits>
+                {steps.map((_, i) => (
+                  <div key={i} className="h-[0.9em] italic">
+                    0{i + 1}
+                  </div>
+                ))}
               </div>
-            </li>
-          ))}
-        </ol>
+            </div>
+
+            <div>
+              <ol data-steps className="grid gap-12 group-data-[h=on]/stage:gap-0">
+                {steps.map((step, i) => (
+                  <li key={step.title} data-step className="group-data-[h=on]/stage:col-start-1 group-data-[h=on]/stage:row-start-1">
+                    <p className="text-sm text-muted">
+                      Paso 0{i + 1} de 0{steps.length}
+                      {i === 1 && <span className="ml-3 rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-white">Gratis</span>}
+                    </p>
+                    <h3 className="mt-3 font-serif text-5xl leading-none md:text-7xl">{step.title}</h3>
+                    <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">{step.text}</p>
+                  </li>
+                ))}
+              </ol>
+              <div aria-hidden className="mt-14 hidden h-px bg-line group-data-[h=on]/stage:block">
+                <div data-bar className="h-full origin-left bg-ink" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -17,23 +17,20 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 70,
-          background: "#fafaf7",
-          color: "#0a0c18",
+          background: "#f4f1ea",
+          color: "#0f0f11",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 26, letterSpacing: 6, textTransform: "uppercase", color: "#565b6f" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 26, letterSpacing: 6, textTransform: "uppercase", color: "#625e57" }}>
           <span>{site.role}</span>
           <span>{site.location}</span>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", fontSize: 150, fontWeight: 800, lineHeight: 0.95, letterSpacing: -6 }}>
+        <div style={{ display: "flex", flexDirection: "column", fontSize: 168, lineHeight: 0.9, letterSpacing: -5, fontFamily: "serif" }}>
           <span>Webs que hacen</span>
-          <span style={{ display: "flex", flexDirection: "column", alignSelf: "flex-start", color: "#2b44ff" }}>
-            vender.
-            <span style={{ height: 22, marginTop: -30, background: "#ff5c28", borderRadius: 6 }} />
-          </span>
+          <span style={{ color: "#2b44ff", fontStyle: "italic" }}>vender.</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 20, fontSize: 34 }}>
-          <div style={{ width: 22, height: 22, borderRadius: 11, background: "#ff5c28" }} />
+          <div style={{ width: 22, height: 22, borderRadius: 11, background: "#2b44ff" }} />
           {site.name} · {site.availability}
         </div>
       </div>

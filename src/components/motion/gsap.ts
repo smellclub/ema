@@ -32,12 +32,35 @@ export function revealTitle(
         yPercent: 110,
         duration: 1,
         ease: "expo.out",
-        stagger: 0.09,
+        stagger: 0.1,
         delay: opts.delay ?? 0,
         // "now": arranca ya (la portada). Si no, cuando el título entra en pantalla.
         scrollTrigger: opts.now
           ? undefined
           : { trigger: opts.trigger ?? self.elements[0], start: opts.start ?? "top 85%", once: true },
+      });
+    },
+  });
+}
+
+/**
+ * Títulos grandes: letra por letra, cada una sube desde atrás de su renglón con un leve giro.
+ * Para la portada y el "Hablemos" del final, donde vale la pena el lujo.
+ */
+export function revealChars(targets: gsap.DOMTarget, opts: { delay?: number; trigger?: Element | string; now?: boolean } = {}) {
+  return SplitText.create(targets, {
+    type: "lines,words,chars",
+    mask: "lines",
+    autoSplit: true,
+    onSplit(self) {
+      return gsap.from(self.chars, {
+        yPercent: 120,
+        rotate: 8,
+        duration: 1.1,
+        ease: "expo.out",
+        stagger: 0.022,
+        delay: opts.delay ?? 0,
+        scrollTrigger: opts.now ? undefined : { trigger: opts.trigger ?? self.elements[0], start: "top 85%", once: true },
       });
     },
   });

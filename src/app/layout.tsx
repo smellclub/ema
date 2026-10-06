@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Familjen_Grotesk } from "next/font/google";
+import { Instrument_Sans, Instrument_Serif } from "next/font/google";
 import { site } from "@/config/site";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { Cursor } from "@/components/motion/Cursor";
@@ -7,11 +7,10 @@ import "./globals.css";
 
 // next/font baja las fuentes en el build y las sirve desde nuestro dominio:
 // el navegador nunca le pide nada a Google (más rápido, más privado y CSP más cerrada).
-// Bricolage Grotesque: títulos con carácter pero serios, la que usan muchos estudios de diseño.
-// Es "variable": un solo archivo trae todos los grosores. latin-ext trae las tildes y la ñ.
-const display = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin", "latin-ext"], axes: ["opsz"] });
-// Familjen Grotesk: para leer cómodo, con un poco más de carácter que una de sistema.
-const sans = Familjen_Grotesk({ variable: "--font-familjen", subsets: ["latin", "latin-ext"] });
+// Instrument Serif: títulos finos y elegantes, con una cursiva preciosa para los acentos.
+// Instrument Sans: su pareja de la misma familia para leer cómodo. latin-ext trae tildes y ñ.
+const serif = Instrument_Serif({ variable: "--font-instrument-serif", subsets: ["latin", "latin-ext"], weight: "400", style: ["normal", "italic"] });
+const sans = Instrument_Sans({ variable: "--font-instrument-sans", subsets: ["latin", "latin-ext"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.siteUrl),
@@ -29,13 +28,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fafaf7",
+  themeColor: "#f4f1ea",
   colorScheme: "light",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es-UY" className={`${display.variable} ${sans.variable} antialiased`}>
+    <html lang="es-UY" className={`${serif.variable} ${sans.variable} antialiased`}>
       <body className="min-h-screen font-sans">
         <a
           href="#contenido"

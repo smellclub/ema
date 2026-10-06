@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { gsap, prefersReducedMotion } from "./gsap";
 
 /**
- * Cursor propio: un punto de color que sigue al mouse con un poco de retraso
- * y se agranda sobre links y botones. Sobre un elemento con data-cursor="Texto"
- * muestra ese texto adentro (por ejemplo "Ver" en los trabajos).
+ * Cursor propio: un punto que invierte los colores de lo que tiene abajo (mix-blend-mode: difference),
+ * así se ve igual sobre marfil, sobre negro y sobre fotos. Sobre links crece un poco y sobre un
+ * elemento con data-cursor="Texto" se convierte en un círculo azul con ese texto ("Ver", "Arrastrá").
  * Solo en compus con mouse: en celulares no existe el cursor.
  */
 export function Cursor() {
@@ -20,26 +20,27 @@ export function Cursor() {
     el.hidden = false;
     // Invisible hasta que el mouse se mueve por primera vez (si no, aparece clavado arriba a la izquierda).
     gsap.set(el, { xPercent: -50, yPercent: -50, opacity: 0 });
-    const xTo = gsap.quickTo(el, "x", { duration: 0.35, ease: "power3" });
-    const yTo = gsap.quickTo(el, "y", { duration: 0.35, ease: "power3" });
+    const xTo = gsap.quickTo(el, "x", { duration: 0.45, ease: "power3" });
+    const yTo = gsap.quickTo(el, "y", { duration: 0.45, ease: "power3" });
 
     let shown = false;
     const move = (e: PointerEvent) => {
       if (!shown) {
         shown = true;
         gsap.set(el, { x: e.clientX, y: e.clientY });
-        gsap.to(el, { opacity: 1, duration: 0.2 });
+        gsap.to(el, { opacity: 1, duration: 0.3 });
       }
       xTo(e.clientX);
       yTo(e.clientY);
     };
     const over = (e: PointerEvent) => {
-      const target = (e.target as HTMLElement).closest<HTMLElement>("a, button, [data-cursor], input, textarea, select, label");
-      const text = target?.dataset.cursor ?? "";
+      const target = (e.target as HTMLElement).closest<HTMLElement>("a, button, [data-cursor], input, textarea, select, label, summary");
+      const text = target?.closest<HTMLElement>("[data-cursor]")?.dataset.cursor ?? "";
       setLabel(text);
+      el.dataset.mode = text ? "label" : target ? "link" : "";
       // Animamos el tamaño (no "scale") para que el texto de adentro se vea nítido.
-      const size = text ? 84 : target ? 44 : 14;
-      gsap.to(el, { width: size, height: size, duration: 0.35, ease: "power3" });
+      const size = text ? 96 : target ? 44 : 12;
+      gsap.to(el, { width: size, height: size, duration: 0.5, ease: "expo.out" });
     };
     const leave = () => gsap.to(el, { opacity: 0, duration: 0.2 });
     const enter = () => gsap.to(el, { opacity: 1, duration: 0.2 });
@@ -62,9 +63,9 @@ export function Cursor() {
       ref={dot}
       hidden
       aria-hidden
-      className={`pointer-events-none fixed left-0 top-0 z-[95] size-3.5 [&:not([hidden])]:flex items-center justify-center rounded-full bg-accent shadow-[0_0_0_2px_#fff,0_8px_18px_-8px_rgb(13_15_26/0.45)]`}
+      className="pointer-events-none fixed left-0 top-0 z-[95] size-3 items-center justify-center rounded-full bg-white mix-blend-difference transition-colors duration-300 [&:not([hidden])]:flex data-[mode=label]:bg-accent data-[mode=label]:mix-blend-normal"
     >
-      {label && <span className="text-xs font-bold uppercase tracking-wider text-white">{label}</span>}
+      {label && <span className="text-[0.7rem] font-medium uppercase tracking-[0.14em] text-white">{label}</span>}
     </div>
   );
 }

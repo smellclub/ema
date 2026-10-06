@@ -32,7 +32,7 @@ Emanuel tiene su propio emprendimiento (Smell Club, perfumes), así que hace web
 - Privacidad: es menor de edad; sin edad, colegio, dirección ni foto.
 - Las demos se presentan siempre como demos (negocios inventados).
 - 2026-10-02 Emanuel pidió: fondo blanco con un color fuerte, muchas animaciones, que salga de lo genérico y que todos los botones funcionen.
-- 2026-10-06 Emanuel pidió: más profesional, con animaciones y buenos colores. Se reemplazó la plancha de stickers por un estilo de estudio (ver DESIGN.md).
+- 2026-10-06 Emanuel pidió más profesional con animaciones y buenos colores; el primer intento (azul + mandarina, estilo estudio) no le gustó. Pidió profesional, elegante y con bastantes animaciones para mostrar cómo trabaja: estilo editorial marfil/negro con serif (ver DESIGN.md).
 
 ## Evidence on Hand
 
