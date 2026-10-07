@@ -1,210 +1,170 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import Image from "next/image";
+import { useRef } from "react";
 import { site } from "@/config/site";
 import { onPreloaderDone } from "@/components/motion/Preloader";
-import { gsap, useGSAP, prefersReducedMotion } from "@/components/motion/gsap";
-import { useStickers } from "@/components/motion/useStickers";
-import { requestDemo } from "@/lib/demo-bus";
+import { Magnetic } from "@/components/motion/Magnetic";
+import { gsap, useGSAP, prefersReducedMotion, revealChars } from "@/components/motion/gsap";
 import { Icon } from "@/components/ui/Icon";
-import { BallSticker, BurstSticker, RoundSticker } from "@/components/ui/Stickers";
+import { Roll } from "@/components/ui/Roll";
 
-// Cada renglón del título es un vinilo distinto, con su propia inclinación.
-const lineStyle = [
-  { vinyl: "sticker-ink", tilt: "-rotate-2", indent: "" },
-  { vinyl: "sticker-white", tilt: "rotate-[1.5deg]", indent: "ml-[0.5em]" },
-  { vinyl: "sticker-blue", tilt: "-rotate-[4deg]", indent: "ml-[0.15em]" },
+// Los celulares del abanico: tres trabajos, cada uno con su giro y su profundidad (cuánto se mueve con el mouse).
+const fan = [
+  { id: "voltio", rotate: -9, x: "-62%", depth: 18 },
+  { id: "black-line", rotate: 0, x: "0%", depth: 34 },
+  { id: "basalto", rotate: 9, x: "62%", depth: 18 },
 ];
 
 /**
- * Portada: la web es una plancha de stickers.
- * - El título son tres stickers que se despegan y se arrastran (en compu).
- * - A la derecha, escribís el nombre de tu negocio y se convierte en sticker en vivo:
- *   es la demo con tu marca que ofrezco, en chiquito. El botón te lleva al formulario ya completado.
+ * Portada. Título gigante en serif que entra letra por letra; la palabra en cursiva va cambiando
+ * (vender, reservar, crecer). A la derecha, un abanico de celulares con mis trabajos que se abre
+ * al cargar y sigue al mouse con profundidad. Al bajar, toda la portada se aleja un poco.
  */
 export function Hero() {
   const root = useRef<HTMLElement>(null);
-  const [business, setBusiness] = useState("");
-  const inputId = useId();
   const { hero } = site;
-
-  // Los renglones grandes solo se arrastran con mouse (en celular trabarían el scroll).
-  const big = useStickers(root, { media: "(min-width: 1024px) and (pointer: fine)", selector: "[data-drag-big]" });
-  const small = useStickers(root, { selector: "[data-drag]" });
+  const phones = fan.map((f) => ({ ...f, project: site.projects.find((p) => p.id === f.id)! }));
 
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
       const q = gsap.utils.selector(root);
       gsap.set(q("[data-in]"), { autoAlpha: 0 });
+      gsap.set(q("[data-phone]"), { x: 0, xPercent: 0, yPercent: 60, autoAlpha: 0, rotate: 0 });
+
       const off = onPreloaderDone(() => {
+        revealChars(q("[data-title]"), { now: true });
         gsap
-          .timeline({ defaults: { ease: "back.out(2.4)" } })
-          .fromTo(
-            q("[data-in='line']"),
-            { autoAlpha: 0, scale: 1.5, rotate: (i: number) => (i % 2 ? 10 : -10) },
-            { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.55, stagger: 0.14 },
-          )
-          .fromTo(q("[data-in='rise']"), { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.08 }, "-=0.2")
-          .fromTo(
-            q("[data-in='pop']"),
-            { autoAlpha: 0, scale: 0.2, rotate: -40 },
-            { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.6, stagger: 0.09 },
-            "-=0.5",
-          );
+          .timeline({ delay: 0.5, defaults: { ease: "expo.out" } })
+          .fromTo(q("[data-in]"), { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 1, stagger: 0.08 })
+          // El abanico se abre: los celulares suben juntos y después cada uno se va a su lugar.
+          .to(q("[data-phone]"), { yPercent: 0, autoAlpha: 1, duration: 1.2, stagger: 0.08 }, 0.1)
+          .to(q("[data-phone]"), { rotate: (i) => fan[i].rotate, xPercent: (i) => parseFloat(fan[i].x), duration: 1.2, ease: "expo.inOut" }, 0.7);
+
+        // La palabra que cambia: cada 2,4 s la actual sube y la siguiente entra desde abajo.
+        const words = q("[data-word]");
+        gsap.set(words, { y: 0, yPercent: (i) => (i ? 110 : 0) });
+        const tl = gsap.timeline({ repeat: -1, delay: 2.4 });
+        words.forEach((w, i) => {
+          const next = words[(i + 1) % words.length];
+          tl.to(w, { yPercent: -110, duration: 0.8, ease: "expo.inOut" })
+            .fromTo(next, { yPercent: 110 }, { yPercent: 0, duration: 0.8, ease: "expo.inOut" }, "<")
+            .to({}, { duration: 1.6 });
+        });
       });
-      return off;
+
+      // Al bajar, la portada se aleja: el título se achica apenas y los celulares suben más rápido.
+      gsap.to(q("[data-title-wrap]"), {
+        scale: 0.92,
+        autoAlpha: 0.3,
+        transformOrigin: "left top",
+        ease: "none",
+        scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
+      });
+      gsap.to(q("[data-fan]"), {
+        yPercent: -25,
+        ease: "none",
+        scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
+      });
+
+      // En compu, cada celular se mueve con el mouse según su profundidad (parallax).
+      if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return off;
+      const movers = q("[data-depth]").map((el) => ({
+        x: gsap.quickTo(el, "x", { duration: 1, ease: "power3" }),
+        y: gsap.quickTo(el, "y", { duration: 1, ease: "power3" }),
+        d: Number(el.dataset.depth),
+      }));
+      const move = (e: PointerEvent) => {
+        const nx = e.clientX / window.innerWidth - 0.5;
+        const ny = e.clientY / window.innerHeight - 0.5;
+        movers.forEach((m) => {
+          m.x(nx * m.d);
+          m.y(ny * m.d);
+        });
+      };
+      window.addEventListener("pointermove", move);
+      return () => {
+        off();
+        window.removeEventListener("pointermove", move);
+      };
     },
     { scope: root },
   );
 
-  const name = business.trim() || "Tu negocio";
-  // Cuanto más largo el nombre, más chica la letra, para que siempre entre en el sticker.
-  const fontSize = `${Math.max(1.5, Math.min(3.4, 26 / Math.max(name.length, 7))).toFixed(2)}rem`;
-
   return (
-    <section
-      ref={root}
-      id="inicio"
-      aria-labelledby="hero-title"
-      className="relative isolate overflow-hidden px-5 pb-20 pt-28 md:px-10 md:pt-32 lg:flex lg:min-h-svh lg:items-center lg:pb-16"
-    >
-      <div className="mx-auto grid w-full max-w-[1600px] items-center gap-14 lg:grid-cols-[1.25fr_1fr] lg:gap-10">
-        <div>
-          <h1
-            id="hero-title"
-            className="font-display text-[clamp(3.1rem,14.5vw,5.5rem)] uppercase leading-none sm:text-[clamp(4rem,11vw,7rem)] lg:text-[clamp(4.5rem,7.2vw,7.5rem)]"
-          >
-            {hero.lines.map((line, i) => (
-              <span key={line} data-wrap className={`relative mt-[0.2em] block w-fit first:mt-0 ${lineStyle[i].indent}`}>
-                <span data-slot aria-hidden className="kiss-cut invisible absolute inset-0 opacity-0" />
-                <span data-in="line" className="block">
-                  <span
-                    data-drag-big
-                    data-cursor="Despegá"
-                    className={`sticker ${lineStyle[i].vinyl} ${lineStyle[i].tilt} touch-manipulation select-none px-[0.22em] pb-[0.06em] pt-[0.14em] lg:cursor-grab`}
-                  >
-                    {line}
-                  </span>
-                </span>
-              </span>
-            ))}
-          </h1>
-
-          <p data-in="rise" className="mt-10 max-w-md text-lg leading-relaxed text-muted md:text-xl">
-            {hero.intro}
-          </p>
-
-          <div data-in="rise" className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <a href="#trabajos" className="group inline-flex items-center gap-2 text-lg font-semibold underline decoration-accent decoration-2 underline-offset-[6px] hover:decoration-4">
-              Ver mis trabajos
-              <Icon name="arrow-down" className="size-5 transition-transform group-hover:translate-y-1" />
-            </a>
-            <button
-              type="button"
-              onClick={() => {
-                big.reset();
-                small.reset();
-              }}
-              className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-muted transition-colors hover:bg-paper-soft hover:text-ink"
-            >
-              <Icon name="reset" className="size-4" />
-              Volver a pegar los stickers
-            </button>
-          </div>
+    <section ref={root} id="inicio" aria-labelledby="hero-title" className="relative overflow-hidden px-5 pb-16 pt-28 md:px-10 md:pt-36 lg:min-h-svh">
+      <div className="mx-auto max-w-[1600px]">
+        <div data-in className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-5 text-sm text-muted">
+          <span className="inline-flex items-center gap-2.5 text-ink">
+            <span className="relative flex size-2">
+              <span className="ping absolute inline-flex size-full rounded-full bg-accent opacity-60" />
+              <span className="relative inline-flex size-2 rounded-full bg-accent" />
+            </span>
+            {site.availability}
+          </span>
+          <span>
+            {site.role} — {site.location}
+          </span>
         </div>
 
-        {/* El generador de stickers: la demo con tu marca, en chiquito. */}
-        <form
-          data-in="rise"
-          onSubmit={(e) => {
-            e.preventDefault();
-            requestDemo({ business: business.trim() });
-          }}
-          className="relative mx-auto w-full max-w-lg rounded-[2rem] border-2 border-dashed border-line bg-paper p-6 sm:p-8"
-        >
-          <div className="grid min-h-52 place-items-center px-2 py-8 sm:min-h-60">
-            <div aria-live="polite" className="sticker sticker-blue max-w-full rotate-[3deg] px-6 pb-4 pt-5 text-center">
-              <p className="break-words font-display leading-[1.05]" style={{ fontSize }}>
-                {name}
-              </p>
-              <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80">Web nueva · demo gratis</p>
+        <div data-title-wrap className="mt-10 md:mt-12">
+          <h1 id="hero-title" className="font-serif text-[clamp(3.6rem,12.5vw,10.5rem)] leading-[0.88]">
+            <span data-title className="block">
+              {hero.lines[0]}
+            </span>
+            {/* La palabra que cambia. Todas están apiladas en el mismo lugar; el ancho lo da la más larga. */}
+            <span className="relative inline-grid overflow-hidden pb-[0.1em] pr-[0.08em] align-bottom text-accent">
+              <span className="sr-only">{hero.rotate[0]}.</span>
+              {hero.rotate.map((w, i) => (
+                // Las que no se ven esperan abajo, escondidas por la máscara (sin JS queda la primera).
+                <em key={w} data-word aria-hidden className="col-start-1 row-start-1 block" style={i ? { transform: "translateY(110%)" } : undefined}>
+                  {w}.
+                </em>
+              ))}
+            </span>
+          </h1>
+        </div>
+
+        <div className="mt-10 grid items-end gap-14 md:mt-12 lg:grid-cols-[1fr_1fr]">
+          <div>
+            <p data-in className="max-w-md text-lg leading-relaxed text-muted md:text-xl">
+              {hero.intro}
+            </p>
+            <div data-in className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <Magnetic>
+                <a href="#trabajos" className="btn group px-7 py-4 text-base">
+                  <Roll>Ver mis trabajos</Roll>
+                  <Icon name="arrow-down" className="size-4 transition-transform duration-500 group-hover:translate-y-0.5" />
+                </a>
+              </Magnetic>
+              <a href="#demo" className="link-line text-base">
+                Probá tu web en vivo
+              </a>
             </div>
           </div>
 
-          <label htmlFor={inputId} className="mt-6 block text-base font-semibold">
-            ¿Cómo se llama tu negocio?
-          </label>
-          <input
-            id={inputId}
-            value={business}
-            onChange={(e) => setBusiness(e.target.value.slice(0, 40))}
-            maxLength={40}
-            autoComplete="organization"
-            placeholder="Ej: Peluquería Sol"
-            className="field"
-          />
-          <button
-            type="submit"
-            className="btn-sticker group mt-5 w-full px-7 py-4 text-lg"
-          >
-            Quiero mi demo
-            <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />
-          </button>
-          <p className="mt-3 text-center text-sm text-muted">Te la muestro antes de que pagues nada.</p>
-          {/* "Demo gratis" va pegado en la esquina del panel: arriba en celular, abajo en compu. */}
-          <span data-wrap aria-hidden className="absolute -right-3 -top-12 w-24 sm:w-28 lg:-bottom-14 lg:-right-12 lg:top-auto lg:w-36">
-            <span data-in="pop" className="block">
-              <span data-drag data-cursor="Despegá" className="block cursor-grab touch-none">
-                <BurstSticker className="w-full text-base sm:text-lg lg:text-xl">
-                  Demo
-                  <br />
-                  gratis
-                </BurstSticker>
-              </span>
-            </span>
-          </span>
-        </form>
-      </div>
-
-      {/* Stickers sueltos. Se arrastran con mouse o con el dedo. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-0">
-        <span data-wrap className="absolute right-[5%] top-[11.5rem] w-24 sm:right-[8%] sm:top-[9rem] sm:w-28 lg:right-[44%] lg:top-[16%] lg:w-32">
-          <span data-in="pop" className="block">
-            <span data-drag data-cursor="Despegá" className="pointer-events-auto block cursor-grab touch-none">
-              <RoundSticker text="HECHO EN URUGUAY • HECHO EN URUGUAY • " className="w-full">
-                <svg viewBox="0 0 40 40" className="size-9 sm:size-11" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
-                  <circle cx="20" cy="20" r="7" fill="currentColor" />
-                  <path d="M20 3v5M20 32v5M3 20h5M32 20h5M8 8l3.5 3.5M28.5 28.5 32 32M32 8l-3.5 3.5M11.5 28.5 8 32" />
-                </svg>
-              </RoundSticker>
-            </span>
-          </span>
-        </span>
-
-        <span data-wrap className="absolute right-[4%] top-[33rem] sm:hidden lg:right-auto lg:left-[54%] lg:top-[11%] lg:block">
-          <span data-in="pop" className="block">
-            <span data-drag data-cursor="Despegá" className="sticker sticker-ink pointer-events-auto block -rotate-6 cursor-grab touch-none px-4 py-2 text-base font-semibold">
-              Rápida en el celu
-            </span>
-          </span>
-        </span>
-
-        <span data-wrap className="absolute right-[6%] top-[18.5rem] w-14 sm:hidden xl:right-auto xl:top-auto xl:bottom-[12%] xl:left-[38%] xl:block xl:w-20">
-          <span data-in="pop" className="block">
-            <span data-drag data-cursor="Despegá" className="pointer-events-auto block cursor-grab touch-none">
-              <BallSticker className="w-full" />
-            </span>
-          </span>
-        </span>
-
-        <span data-wrap className="absolute right-[4%] top-[18%] hidden lg:block">
-          <span data-in="pop" className="block">
-            <span data-drag data-cursor="Despegá" className="sticker sticker-white pointer-events-auto block rotate-3 cursor-grab touch-none px-4 py-2 text-base font-semibold">
-              Cero plantillas
-            </span>
-          </span>
-        </span>
+          {/* El abanico de celulares con trabajos reales. */}
+          <div data-fan aria-hidden className="relative mx-auto h-[22rem] w-full max-w-md sm:h-[26rem] lg:-mt-40 lg:h-[30rem]">
+            {phones.map((p, i) => (
+              <div key={p.id} data-depth={p.depth} className={`absolute inset-x-0 bottom-0 mx-auto w-[42%] max-w-[13rem] ${i === 1 ? "z-10" : ""}`}>
+                <div data-phone style={{ transform: `translateX(${p.x}) rotate(${p.rotate}deg)` }} className="origin-bottom">
+                  <div className="rounded-[1.6rem] bg-ink p-1.5 shadow-[0_40px_60px_-30px_rgb(15_15_17/0.6)]">
+                    <Image
+                      src={p.project.images.mobile}
+                      alt=""
+                      width={390}
+                      height={844}
+                      sizes="210px"
+                      priority={i === 1}
+                      className="h-auto w-full rounded-[1.2rem]"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

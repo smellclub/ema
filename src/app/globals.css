@@ -1,18 +1,20 @@
 @import "tailwindcss";
 
 /*
- * Paleta "plancha de stickers": papel blanco, vinilo azul eléctrico y vinilo negro.
+ * Paleta "editorial": papel marfil, tinta casi negra y un solo color de marca (azul eléctrico)
+ * usado con cuidado: palabras en cursiva, el cursor, los detalles. Las secciones oscuras usan el
+ * azul claro (sky) porque el eléctrico pierde contraste sobre negro.
  * Los colores viven en :root como variables para poder cambiarlos en un solo lugar.
- * (Versión anterior, oscura: ink #070b16, paper #eef1f7, accent #4d82ff.)
  */
 :root {
-  --paper: #ffffff; /* papel soporte de la plancha */
-  --paper-soft: #f2f4fa; /* papel con un toque de azul para separar zonas */
-  --ink: #0d0f1a; /* vinilo negro y texto */
-  --muted: #5b6075; /* texto secundario (4.5:1 sobre blanco) */
-  --line: #d9dceb; /* troqueles y bordes */
-  --accent: #1f3bff; /* vinilo azul eléctrico */
-  --accent-deep: #1427c9; /* azul al apretar */
+  --paper: #f4f1ea; /* marfil: más cálido y elegante que el blanco puro */
+  --paper-soft: #ebe7dd; /* zonas tranquilas, fondos de imágenes */
+  --ink: #0f0f11; /* tinta y secciones oscuras */
+  --ink-soft: #1a1a1e; /* tarjetas sobre fondo oscuro */
+  --muted: #625e57; /* texto secundario (5.6:1 sobre marfil) */
+  --line: #d9d4c8; /* líneas finas sobre marfil */
+  --accent: #2b44ff; /* azul eléctrico: el color de la marca */
+  --sky: #a3b0ff; /* el azul sobre fondo oscuro */
   --on-accent: #ffffff;
 }
 
@@ -20,25 +22,25 @@
   --color-paper: var(--paper);
   --color-paper-soft: var(--paper-soft);
   --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-accent: var(--accent);
-  --color-accent-deep: var(--accent-deep);
-  --font-display: var(--font-bagel);
-  --font-sans: var(--font-familjen);
+  --color-sky: var(--sky);
+  --font-serif: var(--font-instrument-serif);
+  --font-sans: var(--font-instrument-sans);
 }
 
 html {
   scroll-padding-top: 6rem;
   background: var(--color-paper);
   overflow-x: clip;
+  scrollbar-color: var(--color-ink) var(--color-paper);
 }
 
 body {
   background: var(--color-paper);
   color: var(--color-ink);
-  /* Los stickers torcidos o en plena animación de "slap" a veces asoman por el costado:
-     clip los corta sin crear una barra de scroll horizontal (y sin romper position: sticky). */
   overflow-x: clip;
 }
 
@@ -48,20 +50,15 @@ body {
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 input,
 textarea,
 select {
   caret-color: var(--color-accent);
-}
-
-/* Barra de scroll con los colores de la web (Chrome, Edge, Firefox). */
-html {
-  scrollbar-color: var(--color-accent) var(--color-paper-soft);
 }
 
 /* Lenis (scroll suave): estas reglas vienen de su documentación. */
@@ -76,151 +73,244 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* Bagel Fat One trae un solo grosor: que el navegador no invente una "negrita" encima. */
-.font-display {
+/* Títulos: serif fina y grande, apenas apretada. La cursiva es el "acento" de la marca. */
+.font-serif {
   font-weight: 400;
-  font-synthesis: none;
+  letter-spacing: -0.025em;
+}
+.font-serif em {
+  font-style: italic;
   letter-spacing: -0.01em;
 }
 
-/* Van en la capa "components": así las clases de Tailwind (grid, block, rounded-full…) pueden pisarlas. */
 @layer components {
-/*
- * EL STICKER. Un vinilo con borde blanco troquelado (el anillo de box-shadow),
- * una sombra suave que lo despega del papel y las esquinas redondeadas del corte.
- */
-.sticker {
-  --sticker-edge: 0.14em;
-  position: relative;
-  display: inline-block;
-  border-radius: 0.32em;
-  box-shadow:
-    0 0 0 var(--sticker-edge) #fff,
-    0 0.12em 0.2em calc(var(--sticker-edge) - 0.02em) rgb(13 15 26 / 0.12),
-    0 0.35em 0.7em -0.1em rgb(13 15 26 / 0.22);
-}
-.sticker-blue {
-  background: var(--color-accent);
-  color: var(--on-accent);
-}
-.sticker-ink {
-  background: var(--color-ink);
-  color: #fff;
-}
-.sticker-white {
-  background: #fff;
-  color: var(--color-ink);
-  /* Un sticker blanco sobre papel blanco se ve por su sombra y un troquel finito. */
-  box-shadow:
-    0 0 0 1px var(--color-line),
-    0 0.12em 0.2em rgb(13 15 26 / 0.1),
-    0 0.35em 0.7em -0.1em rgb(13 15 26 / 0.2);
-}
-/* Mientras lo arrastrás, el sticker se levanta del papel. */
-.sticker.is-lifted {
-  box-shadow:
-    0 0 0 var(--sticker-edge) #fff,
-    0 1.2em 1.6em -0.3em rgb(13 15 26 / 0.35);
-}
-.sticker-white.is-lifted {
-  box-shadow:
-    0 0 0 1px var(--color-line),
-    0 1.2em 1.6em -0.3em rgb(13 15 26 / 0.3);
+  /* Rótulo chico arriba de cada sección: "01 — Trabajos". */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 2rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  /*
+   * Link con subrayado que se dibuja: la línea sale por la derecha y vuelve a entrar por la izquierda.
+   * Un detalle chico que se nota en webs cuidadas.
+   */
+  .link-line {
+    background: linear-gradient(currentColor, currentColor) no-repeat right bottom / 100% 1px;
+    padding-bottom: 2px;
+    transition: background-size 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .link-line:hover {
+    background-size: 0% 1px;
+    background-position: right bottom;
+    animation: line-in 0.5s 0.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  }
+
+  /*
+   * BOTÓN: pastilla con el texto que "rueda" hacia arriba al pasar el mouse
+   * (la palabra sale y entra una copia desde abajo) y un fondo que crece desde abajo.
+   */
+  .btn {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    border-radius: 9999px;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-weight: 500;
+    transition:
+      color 0.4s,
+      scale 0.15s ease-out;
+  }
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--btn-hover, var(--color-accent));
+    transform: translateY(101%);
+    transition: transform 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .btn:hover::before,
+  .btn:focus-visible::before {
+    transform: translateY(0);
+  }
+  .btn:active {
+    scale: 0.97;
+  }
+  .btn:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
+  .btn-light {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  .btn-light:hover {
+    color: #fff;
+  }
+  .btn-outline {
+    background: transparent;
+    color: currentColor;
+    box-shadow: inset 0 0 0 1px currentColor;
+    --btn-hover: var(--color-ink);
+  }
+  .btn-outline:hover {
+    color: var(--color-paper);
+  }
+  /* El texto que rueda: dos copias apiladas dentro de un renglón con overflow oculto. */
+  .roll {
+    display: inline-grid;
+    overflow: hidden;
+    line-height: 1.2;
+  }
+  .roll > span {
+    grid-area: 1 / 1;
+    transition: transform 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .roll > span + span {
+    transform: translateY(105%);
+  }
+  :is(a, button):hover > .roll > span:first-child {
+    transform: translateY(-105%);
+  }
+  :is(a, button):hover > .roll > span + span {
+    transform: translateY(0);
+  }
+
+  /* Ventana de navegador (la demo en vivo). */
+  .browser {
+    overflow: hidden;
+    border-radius: 0.9rem;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px rgb(15 15 17 / 0.08),
+      0 50px 80px -40px rgb(15 15 17 / 0.45);
+  }
+  .browser-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #f1efe9;
+    padding: 0.7rem 1rem;
+  }
+  .browser-bar > i {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 9999px;
+    background: #d6d2c8;
+  }
+
+  /* Campos del formulario: solo una línea abajo, como en las webs editoriales. */
+  .field {
+    margin-top: 0.4rem;
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid var(--color-line);
+    background: transparent;
+    padding: 0.7rem 0;
+    font-size: 1.125rem;
+    color: var(--color-ink);
+    border-radius: 0;
+    transition:
+      border-color 0.3s,
+      background-color 0.3s;
+  }
+  select.field {
+    appearance: none;
+    padding-right: 2rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f0f11' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.2rem center;
+    background-size: 1.1rem;
+    cursor: pointer;
+  }
+  .field::placeholder {
+    color: #8a857c;
+  }
+  .field:hover {
+    border-color: #a9a395;
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 1px 0 0 var(--color-accent);
+  }
+  .field[aria-invalid="true"] {
+    border-color: #c4122f;
+    box-shadow: 0 1px 0 0 #c4122f;
+  }
+  .field.flash {
+    animation: flash 1.2s ease-out;
+  }
+
+  /* Casilla de privacidad. */
+  .check {
+    appearance: none;
+    display: grid;
+    place-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+    border: 1px solid #a9a395;
+    border-radius: 0.3rem;
+    background: transparent;
+    cursor: pointer;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s;
+  }
+  .check:hover {
+    border-color: var(--color-ink);
+  }
+  .check:checked {
+    border-color: var(--color-ink);
+    background: var(--color-ink)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5 10 17l9-10'/%3E%3C/svg%3E")
+      center / 80% no-repeat;
+  }
+  .check[aria-invalid="true"] {
+    border-color: #c4122f;
+  }
 }
 
-/* El hueco que queda en la plancha cuando despegás un sticker. */
-.kiss-cut {
-  border: 2px dashed var(--color-line);
-  border-radius: 0.32em;
+@keyframes line-in {
+  from {
+    background-size: 0% 1px;
+    background-position: left bottom;
+  }
+  to {
+    background-size: 100% 1px;
+    background-position: left bottom;
+  }
 }
 
-/* Esquina despegada de las tarjetas de trabajos: crece al pasar el mouse. */
-.peel {
-  position: relative;
-  isolation: isolate;
-}
-.peel::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 5rem;
-  height: 5rem;
-  transform: scale(var(--peel, 0.48));
-  transform-origin: top right;
-  border-top-right-radius: inherit;
-  background: linear-gradient(225deg, var(--peel-ground, var(--color-paper)) 50%, #dfe3f2 50%, #fff 78%);
-  box-shadow: -6px 6px 12px -4px rgb(13 15 26 / 0.25);
-  border-bottom-left-radius: 0.6rem;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 2;
-  pointer-events: none;
-}
-.peel:hover::after,
-.peel:focus-within::after {
-  --peel: 1;
+@keyframes flash {
+  0% {
+    background-color: rgb(43 68 255 / 0.12);
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
-/*
- * BOTÓN STICKER: las acciones principales también son vinilos.
- * Borde blanco troquelado, apenas torcido; al pasar el mouse se levanta del papel
- * y al apretar se "pega" (se achica un poco).
- */
-.btn-sticker {
-  --sticker-edge: 4px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  border-radius: 0.9rem;
-  background: var(--color-accent);
-  color: #fff;
-  font-weight: 600;
-  rotate: -1.2deg;
-  box-shadow:
-    0 0 0 var(--sticker-edge) #fff,
-    0 3px 5px 2px rgb(13 15 26 / 0.1),
-    0 10px 18px -6px rgb(13 15 26 / 0.3);
-  transition:
-    rotate 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    translate 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    scale 0.15s ease-out,
-    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.2s;
-}
-.btn-sticker:hover {
-  rotate: 0deg;
-  translate: 0 -3px;
-  background: var(--color-accent-deep);
-  box-shadow:
-    0 0 0 var(--sticker-edge) #fff,
-    0 22px 28px -12px rgb(13 15 26 / 0.45);
-}
-.btn-sticker:active {
-  scale: 0.96;
-  translate: 0 0;
-}
-.btn-sticker:disabled {
-  cursor: wait;
-  opacity: 0.75;
-  rotate: 0deg;
-  translate: 0 0;
-}
-.btn-sticker-ink {
-  background: var(--color-ink);
-}
-.btn-sticker-ink:hover {
-  background: var(--color-accent);
-}
-
-/* Línea de troquel: el "cortá por acá" punteado que separa las zonas de la plancha. */
-.die-line {
-  border-top: 2px dashed var(--color-line);
-}
-
-}
-
-/* Cinta de embalar azul que corre sin fin: el contenido está duplicado y se corre la mitad. */
+/* Cinta que corre sin fin: el contenido está duplicado y se corre la mitad. */
 @keyframes marquee {
   to {
     transform: translateX(-50%);
@@ -229,18 +319,17 @@ html.lenis body {
 .marquee-track {
   animation: marquee var(--marquee-speed, 30s) linear infinite;
 }
-.marquee-reverse {
-  animation-direction: reverse;
-}
 
-/* El texto que gira alrededor del sticker redondo. */
-@keyframes spin-slow {
-  to {
-    transform: rotate(360deg);
+/* Puntito "en vivo" que late al lado de "Agenda abierta". */
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
   }
 }
-.spin-slow {
-  animation: spin-slow 18s linear infinite;
+.ping {
+  animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
 /* En la tarjeta de un trabajo, al pasar el mouse la captura "scrollea" la web entera. */
@@ -254,81 +343,20 @@ html.lenis body {
   transition-timing-function: linear;
 }
 
-@layer components {
-/* Campos del formulario sobre el sticker blanco. */
-.field {
-  margin-top: 0.5rem;
-  width: 100%;
-  border-radius: 0.9rem;
-  border: 2px solid var(--color-line);
-  background: #fff;
-  padding: 0.85rem 1rem;
-  font-size: 1.0625rem;
-  color: var(--color-ink);
-  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
-}
-/* Flechita del select dibujada con los colores de la web (la del navegador queda gris y distinta en cada celular). */
-select.field {
-  appearance: none;
-  padding-right: 2.75rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f3bff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.9rem center;
-  background-size: 1.25rem;
-  cursor: pointer;
-}
-/* Casilla de privacidad: un mini sticker que se pone azul con el tilde. */
-.check {
-  appearance: none;
-  display: grid;
-  place-content: center;
-  width: 1.4rem;
-  height: 1.4rem;
-  flex-shrink: 0;
-  border: 2px solid #b9bed6;
-  border-radius: 0.4rem;
-  background: #fff;
-  cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s, rotate 0.3s;
-}
-.check:hover {
-  border-color: var(--color-accent);
-}
-.check:checked {
-  border-color: var(--color-accent);
-  background: var(--color-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5 10 17l9-10'/%3E%3C/svg%3E") center / 80% no-repeat;
-  rotate: -6deg;
-}
-.check[aria-invalid="true"] {
-  border-color: #c4122f;
-}
-.field::placeholder {
-  color: #6b7085;
-}
-.field:hover {
-  border-color: #b9bed6;
-}
-.field:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  background: #fff;
-  box-shadow: 0 0 0 4px rgb(31 59 255 / 0.15);
-}
-.field[aria-invalid="true"] {
-  border-color: #c4122f;
-  background: #fff5f6;
-}
-.field.flash {
-  animation: flash 1.2s ease-out;
-}
-}
-
-@keyframes flash {
-  0% {
-    box-shadow: 0 0 0 0 rgb(31 59 255 / 0.6);
+/* Desplegables (preguntas y servicios): se abren suave donde el navegador lo soporta. */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
   }
-  100% {
-    box-shadow: 0 0 0 14px rgb(31 59 255 / 0);
+  details.unfold::details-content {
+    height: 0;
+    overflow: clip;
+    transition:
+      height 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+      content-visibility 0.6s allow-discrete;
+  }
+  details.unfold[open]::details-content {
+    height: auto;
   }
 }
 
@@ -338,12 +366,17 @@ select.field {
  */
 @media (prefers-reduced-motion: reduce) {
   .marquee-track,
-  .spin-slow,
+  .ping,
   .field.flash {
     animation: none;
   }
   .scroll-shot,
-  .peel::after {
+  .btn::before,
+  .roll > span,
+  .link-line {
+    transition: none;
+  }
+  details.unfold::details-content {
     transition: none;
   }
 }

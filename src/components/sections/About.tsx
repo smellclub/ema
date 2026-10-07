@@ -2,103 +2,114 @@
 
 import { useRef } from "react";
 import { site } from "@/config/site";
-import { gsap, useGSAP, prefersReducedMotion, slapIn } from "@/components/motion/gsap";
-import { useStickers } from "@/components/motion/useStickers";
-import { BallSticker } from "@/components/ui/Stickers";
+import { gsap, useGSAP, prefersReducedMotion, revealTitle } from "@/components/motion/gsap";
+import { Icon, type IconName } from "@/components/ui/Icon";
 
-// Cómo se ve cada sticker de la notebook: vinilo, inclinación y lugar sobre la tapa (en compu).
-const look = [
-  { vinyl: "sticker-blue", tilt: "-rotate-6", spot: "lg:left-[5%] lg:top-[9%]" },
-  { vinyl: "sticker-white", tilt: "rotate-3", spot: "lg:left-[52%] lg:top-[6%]" },
-  { vinyl: "sticker-white", tilt: "rotate-[5deg]", spot: "lg:left-[10%] lg:top-[54%]" },
-  { vinyl: "sticker-blue", tilt: "-rotate-3", spot: "lg:left-[56%] lg:top-[52%]" },
-];
+const icons: Record<string, IconName> = {
+  basquet: "ball",
+  perfumes: "bottle",
+  marketing: "megaphone",
+  negocios: "chart",
+};
 
 /**
- * Sobre mí. El texto se "enciende" palabra por palabra mientras scrolleás,
- * y abajo está mi notebook llena de stickers: lo que hago fuera de la pantalla.
- * En compu los stickers se pueden mover.
+ * Sobre mí. El texto se "enciende" palabra por palabra mientras scrolleás.
+ * Abajo, lo que hago fuera de la pantalla como una lista: las líneas se dibujan al llegar
+ * y cada fila se desliza y muestra su ícono al pasar el mouse.
  */
 export function About() {
   const root = useRef<HTMLElement>(null);
-  const lid = useRef<HTMLDivElement>(null);
-  useStickers(lid, { media: "(min-width: 1024px) and (pointer: fine)" });
 
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
+      const q = gsap.utils.selector(root);
+      revealTitle(q("[data-title]"));
       gsap.fromTo(
-        "[data-w]",
-        { opacity: 0.4 },
+        q("[data-w]"),
+        { opacity: 0.14 },
         {
           opacity: 1,
           stagger: 0.05,
           ease: "none",
-          scrollTrigger: { trigger: "[data-manifesto]", start: "top 75%", end: "bottom 45%", scrub: true },
+          scrollTrigger: { trigger: q("[data-manifesto]")[0], start: "top 75%", end: "bottom 50%", scrub: true },
         },
       );
-      slapIn("[data-off]", "[data-lid]", { stagger: 0.14, start: "top 70%" });
+      q("[data-row]").forEach((row) => {
+        gsap.from(row.querySelector("[data-line]"), {
+          scaleX: 0,
+          duration: 1.2,
+          ease: "expo.inOut",
+          scrollTrigger: { trigger: row, start: "top 90%", once: true },
+        });
+        gsap.from(row.querySelectorAll("[data-cell]"), {
+          yPercent: 100,
+          autoAlpha: 0,
+          duration: 1,
+          stagger: 0.08,
+          ease: "expo.out",
+          scrollTrigger: { trigger: row, start: "top 88%", once: true },
+        });
+      });
     },
     { scope: root },
   );
 
   return (
-    <section ref={root} id="sobre-mi" aria-labelledby="sobre-title" className="die-line relative overflow-hidden">
+    <section ref={root} id="sobre-mi" aria-labelledby="sobre-title" className="border-t border-line">
       <div className="mx-auto max-w-[1600px] px-5 py-28 md:px-10 md:py-40">
-        <h2 id="sobre-title" className="font-display text-[clamp(3rem,10vw,6rem)] uppercase leading-[1.05]">
-          <span className="sticker sticker-ink rotate-2 px-[0.2em] pt-[0.08em]">Quién</span> soy
-        </h2>
-        <p
-          data-manifesto
-          className="mt-12 max-w-5xl text-[1.75rem] font-semibold leading-[1.2] tracking-[-0.02em] md:text-5xl md:leading-[1.15]"
-        >
-          {site.manifesto.split(" ").map((w, i) => (
-            <span key={i} data-w className="inline-block whitespace-pre">
-              {w}{" "}
-            </span>
-          ))}
-        </p>
-
-        <div className="mt-28 grid items-center gap-12 md:mt-40 lg:grid-cols-[1fr_2.2fr] lg:gap-16">
+        <div className="grid gap-10 lg:grid-cols-[1fr_2.4fr] lg:gap-16">
           <div>
-            <h3 className="font-display text-[clamp(2.5rem,7vw,4.5rem)] uppercase leading-[1.05]">
-              Fuera de la pantalla
-            </h3>
-            <p className="mt-5 max-w-sm text-lg leading-relaxed text-muted">
-              Mi notebook tiene los stickers de lo que me mueve cuando no estoy programando.
-              <span className="hidden [@media(pointer:fine)]:lg:inline"> Movelos, son tuyos un rato.</span>
-            </p>
+            <p className="eyebrow text-muted">03 — Sobre mí</p>
+            <h2 id="sobre-title" data-title className="mt-6 font-serif text-[clamp(3rem,6vw,5.5rem)] leading-[0.92]">
+              Quién <em className="text-accent">soy</em>
+            </h2>
           </div>
+          <p data-manifesto className="font-serif text-[2rem] leading-[1.12] md:text-[3.4rem] md:leading-[1.06]">
+            {site.manifesto.split(" ").map((w, i) => (
+              <span key={i} data-w className="inline-block whitespace-pre">
+                {w}{" "}
+              </span>
+            ))}
+          </p>
+        </div>
 
-          {/* La tapa de la notebook: vinilo negro con los stickers pegados. */}
-          <div
-            ref={lid}
-            data-lid
-            className="relative rounded-[2rem] bg-ink p-5 shadow-[0_40px_60px_-36px_rgb(13_15_26/0.7)] sm:p-8 lg:aspect-[16/10] lg:p-0"
-          >
-            <span aria-hidden className="absolute left-1/2 top-3 size-1.5 -translate-x-1/2 rounded-full bg-white/25" />
-            <ul className="grid gap-6 pt-4 sm:grid-cols-2 lg:block lg:pt-0">
-              {site.offScreen.map((item, i) => (
-                <li key={item.id} data-wrap className={`lg:absolute lg:w-[40%] ${look[i].spot}`}>
-                  <div data-off>
-                    <div
-                      data-drag
-                      data-cursor="Mover"
-                      className={`sticker ${look[i].vinyl} ${look[i].tilt} block p-5 lg:cursor-grab lg:select-none xl:p-6`}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <p className="font-display text-3xl uppercase leading-none xl:text-4xl">{item.title}</p>
-                        {item.id === "basquet" && <BallSticker className="-mr-1 -mt-1 w-12 shrink-0" />}
-                      </div>
-                      <p className={`mt-3 leading-snug ${look[i].vinyl === "sticker-blue" ? "text-white/85" : "text-ink/75"}`}>
-                        {item.text}
-                      </p>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="mt-28 md:mt-40">
+          <p className="eyebrow text-muted">Fuera de la pantalla</p>
+          <ul className="mt-8">
+            {site.offScreen.map((item, i) => (
+              <li key={item.id} data-row className="group relative">
+                <span data-line aria-hidden className="absolute inset-x-0 top-0 h-px origin-left bg-line" />
+                <div className="grid items-center gap-2 py-7 md:grid-cols-[4rem_1fr_1fr_3rem] md:gap-8 md:py-9">
+                  <span className="hidden overflow-hidden md:block">
+                    <span data-cell className="block text-sm text-muted">
+                      0{i + 1}
+                    </span>
+                  </span>
+                  <span className="block overflow-hidden">
+                    {/* GSAP mueve el de afuera y el hover mueve el de adentro: si los dos tocan el mismo elemento, se pisan. */}
+                    <span data-cell className="block">
+                      <span className="block font-serif text-4xl transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-4 md:text-6xl">
+                        {i % 2 ? <em>{item.title}</em> : item.title}
+                      </span>
+                    </span>
+                  </span>
+                  <span className="block overflow-hidden">
+                    <span data-cell className="block max-w-sm text-muted">
+                      {item.text}
+                    </span>
+                  </span>
+                  <span
+                    aria-hidden
+                    className="hidden size-12 scale-50 place-items-center rounded-full bg-accent text-white opacity-0 transition-all duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:scale-100 group-hover:opacity-100 md:grid"
+                  >
+                    <Icon name={icons[item.id] ?? "check"} className="size-5" />
+                  </span>
+                </div>
+              </li>
+            ))}
+            <li aria-hidden className="h-px bg-line" />
+          </ul>
         </div>
       </div>
     </section>

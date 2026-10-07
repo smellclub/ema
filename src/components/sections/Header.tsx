@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { site } from "@/config/site";
 import { LocalTime } from "@/components/ui/LocalTime";
+import { Magnetic } from "@/components/motion/Magnetic";
+import { Roll } from "@/components/ui/Roll";
 import { gsap, useGSAP, prefersReducedMotion } from "@/components/motion/gsap";
 
 const nav = [
@@ -12,30 +14,36 @@ const nav = [
   { href: "#contacto", label: "Contacto" },
 ];
 
+/**
+ * Barra de arriba: transparente y con los colores invertidos (mix-blend-difference),
+ * así se lee igual sobre el marfil y sobre las secciones negras. Se esconde al bajar y vuelve al subir.
+ */
 export function Header() {
   const [open, setOpen] = useState(false);
   const menu = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLElement>(null);
 
-  // La barra se esconde al bajar y vuelve al subir: más espacio para el contenido.
   useGSAP(() => {
     if (prefersReducedMotion()) return;
     let last = window.scrollY;
     const onScroll = () => {
       const y = window.scrollY;
-      const hide = y > last && y > 200;
-      gsap.to(bar.current, { yPercent: hide ? -110 : 0, duration: 0.4, ease: "power3.out", overwrite: true });
+      const hide = y > last && y > 200 && !open;
+      gsap.to(bar.current, { yPercent: hide ? -120 : 0, duration: 0.5, ease: "power3.out", overwrite: true });
       last = y;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  });
+  }, { dependencies: [open] });
 
-  // Menú de celular: los links suben uno por uno.
+  // Menú de celular: el telón baja y los links suben uno por uno detrás de una máscara.
   useGSAP(
     () => {
       if (!open || prefersReducedMotion()) return;
-      gsap.from("[data-menu-link]", { scale: 1.5, rotate: (i: number) => (i % 2 ? 12 : -12), autoAlpha: 0, stagger: 0.07, duration: 0.5, ease: "back.out(2.4)" });
+      gsap
+        .timeline()
+        .from(menu.current, { clipPath: "inset(0 0 100% 0)", duration: 0.7, ease: "expo.inOut" })
+        .from("[data-menu-link]", { yPercent: 110, stagger: 0.06, duration: 0.8, ease: "expo.out" }, "-=0.3");
     },
     { scope: menu, dependencies: [open] },
   );
@@ -48,78 +56,74 @@ export function Header() {
   }, [open]);
 
   return (
-    <header ref={bar} className="fixed inset-x-0 top-0 z-50">
-      <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between gap-6 px-5 md:h-20 md:px-10">
-        <a href="#inicio" className="group flex items-center gap-3" aria-label={`${site.name}, ir al inicio`}>
-          {/* Logo: un sticker redondo con las iniciales. Gira un poco al pasar el mouse. */}
-          <span className="sticker sticker-blue grid size-11 place-items-center !rounded-full font-display text-lg transition-transform duration-500 group-hover:-rotate-12 md:size-12">
-            EY
-          </span>
-          <span className="hidden rounded-full bg-paper/85 px-2 py-1 font-display text-xl uppercase backdrop-blur-sm sm:block">{site.name}</span>
-        </a>
-
-        <nav aria-label="Principal" className="hidden md:block">
-          <ul className="flex gap-1 rounded-full bg-paper/90 p-1 shadow-[0_0_0_1px_var(--color-line),0_10px_24px_-14px_rgb(13_15_26/0.35)] backdrop-blur-md">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="block rounded-full px-4 py-2 text-[0.95rem] font-semibold text-ink/75 transition-colors hover:bg-accent hover:text-white"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="flex items-center gap-5">
-          <LocalTime className="hidden rounded-full bg-paper/85 px-2 py-1 text-sm text-muted backdrop-blur-sm xl:inline" />
-          <a
-            href="#contacto"
-            className="btn-sticker hidden px-5 py-2.5 text-[0.95rem] md:inline-flex"
-          >
-            Hablemos
+    <>
+      <header ref={bar} className="fixed inset-x-0 top-0 z-50 text-white mix-blend-difference">
+        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between gap-6 px-5 md:h-24 md:px-10">
+          <a href="#inicio" className="group flex items-baseline gap-2 font-serif text-2xl md:text-[1.75rem]" aria-label={`${site.name}, ir al inicio`}>
+            Emanuel <em className="transition-transform duration-500 group-hover:translate-x-1">Yordi</em>
           </a>
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            aria-controls="menu-movil"
-            className="flex size-11 items-center justify-center rounded-full bg-ink text-white md:hidden"
-          >
-            <span className="sr-only">{open ? "Cerrar menú" : "Abrir menú"}</span>
-            <span aria-hidden className="relative block h-3 w-5">
-              <span className={`absolute left-0 h-0.5 w-5 bg-white transition-transform ${open ? "top-1.5 rotate-45" : "top-0"}`} />
-              <span className={`absolute left-0 h-0.5 w-5 bg-white transition-transform ${open ? "top-1.5 -rotate-45" : "top-2.5"}`} />
-            </span>
-          </button>
+
+          <nav aria-label="Principal" className="hidden md:block">
+            <ul className="flex gap-8">
+              {nav.map((item, i) => (
+                <li key={item.href}>
+                  <a href={item.href} className="group flex items-start gap-1 text-[0.95rem]">
+                    <span className="text-[0.65rem] opacity-60">0{i + 1}</span>
+                    <Roll>{item.label}</Roll>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="flex items-center gap-6">
+            <LocalTime className="hidden text-sm opacity-70 xl:inline" />
+            <Magnetic>
+              <a href="#contacto" className="hidden items-center gap-2 rounded-full border border-white/60 px-5 py-2.5 text-[0.95rem] transition-colors hover:bg-white hover:text-black md:inline-flex">
+                <Roll>Hablemos</Roll>
+              </a>
+            </Magnetic>
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls="menu-movil"
+              className="flex h-11 items-center gap-3 text-sm uppercase tracking-[0.14em] md:hidden"
+            >
+              {open ? "Cerrar" : "Menú"}
+              <span aria-hidden className="relative block h-2.5 w-6">
+                <span className={`absolute left-0 h-px w-6 bg-current transition-transform duration-500 ${open ? "top-1 rotate-45" : "top-0"}`} />
+                <span className={`absolute left-0 h-px w-6 bg-current transition-transform duration-500 ${open ? "top-1 -rotate-45" : "top-2"}`} />
+              </span>
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
       {open && (
         <div
           ref={menu}
           id="menu-movil"
-          className="fixed inset-0 top-16 z-40 flex flex-col justify-between overflow-y-auto bg-accent px-5 pb-10 pt-10 text-white md:hidden"
+          className="fixed inset-0 z-40 flex flex-col justify-between overflow-y-auto bg-ink px-5 pb-10 pt-28 text-paper md:hidden"
         >
-          <ul className="space-y-5">
+          <ul className="space-y-1">
             {nav.map((item, i) => (
-              <li key={item.href}>
-                <a
-                  data-menu-link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className={`sticker sticker-white font-display text-5xl uppercase leading-none px-4 pb-1 pt-3 ${i % 2 ? "rotate-2" : "-rotate-2"}`}
-                >
-                  {item.label}
+              <li key={item.href} className="overflow-hidden">
+                <a data-menu-link href={item.href} onClick={() => setOpen(false)} className="flex items-baseline gap-4 py-1 font-serif text-6xl">
+                  <span className="font-sans text-sm text-paper/50">0{i + 1}</span>
+                  {i % 2 ? <em>{item.label}</em> : item.label}
                 </a>
               </li>
             ))}
           </ul>
-          <LocalTime className="text-base text-white/85" />
+          <div className="space-y-5 border-t border-paper/15 pt-6">
+            <a href={site.links.whatsapp} target="_blank" rel="noopener noreferrer" className="btn btn-light w-full px-6 py-4 text-lg">
+              Escribime por WhatsApp
+            </a>
+            <LocalTime className="block text-sm text-paper/60" />
+          </div>
         </div>
       )}
-    </header>
+    </>
   );
 }

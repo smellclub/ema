@@ -3,9 +3,10 @@
 import Image from "next/image";
 import { useRef, type CSSProperties } from "react";
 import { site } from "@/config/site";
-import { gsap, useGSAP, prefersReducedMotion, slapIn } from "@/components/motion/gsap";
+import { gsap, useGSAP, prefersReducedMotion, revealTitle, riseIn } from "@/components/motion/gsap";
 import { requestDemo } from "@/lib/demo-bus";
 import { Icon } from "@/components/ui/Icon";
+import { Roll } from "@/components/ui/Roll";
 
 /** Qué servicio del formulario se parece a cada trabajo (para el botón "Quiero una así"). */
 const serviceFor: Record<string, string> = {
@@ -16,163 +17,213 @@ const serviceFor: Record<string, string> = {
 };
 
 /**
- * Trabajos: cada web es un sticker grande pegado en la plancha, un poco torcido.
- * Al pasar el mouse se endereza, la esquina se despega y la captura recorre la web entera.
+ * Trabajos, sobre negro. En compu la sección se queda fija y los trabajos pasan de costado
+ * mientras scrolleás (galería horizontal), con un contador y una barra de progreso.
+ * Cada captura se mueve un poco dentro de su marco (parallax) y al pasar el mouse recorre la web entera.
+ * En celular (o con "reducir movimiento") es una lista normal hacia abajo.
  */
 export function Work() {
   const root = useRef<HTMLElement>(null);
   const projects = site.projects;
+  const total = String(projects.length).padStart(2, "0");
 
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      slapIn("[data-title-sticker]", "[data-title-sticker]");
-      gsap.utils.toArray<HTMLElement>("[data-project]").forEach((card) => {
-        slapIn(card.querySelectorAll("[data-slap]"), card, { start: "top 75%", stagger: 0.15 });
-        gsap.from(card.querySelectorAll("[data-rise]"), {
-          y: 40,
-          autoAlpha: 0,
-          duration: 0.9,
-          ease: "expo.out",
-          stagger: 0.06,
-          scrollTrigger: { trigger: card, start: "top 70%", once: true },
+      const q = gsap.utils.selector(root);
+      revealTitle(q("[data-title]"));
+      riseIn(q("[data-intro]"), q("[data-intro]")[0], { start: "top 85%" });
+
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 1024px)", () => {
+        const track = q("[data-track]")[0];
+        const pin = q("[data-pin]")[0];
+        track.dataset.h = pin.dataset.h = "on";
+        const distance = () => track.scrollWidth - window.innerWidth;
+        const counter = q("[data-current]")[0];
+        const slide = gsap.to(track, {
+          x: () => -distance(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: q("[data-pin]")[0],
+            start: "top top",
+            end: () => `+=${distance()}`,
+            pin: true,
+            scrub: 0.8,
+            invalidateOnRefresh: true,
+            onUpdate(self) {
+              const n = Math.min(projects.length, Math.floor(self.progress * projects.length) + 1);
+              counter.textContent = String(n).padStart(2, "0");
+            },
+          },
+        });
+        gsap.to(q("[data-progress]"), {
+          scaleX: 1,
+          ease: "none",
+          scrollTrigger: { trigger: q("[data-pin]")[0], start: "top top", end: () => `+=${distance()}`, scrub: true },
+        });
+        // Dentro de cada marco la imagen se desliza al revés que la galería: da profundidad.
+        q("[data-panel]").forEach((panel) => {
+          gsap.fromTo(
+            panel.querySelector("[data-shot]"),
+            { xPercent: -6 },
+            {
+              xPercent: 6,
+              ease: "none",
+              scrollTrigger: { trigger: panel, containerAnimation: slide, start: "left right", end: "right left", scrub: true },
+            },
+          );
+          gsap.from(panel.querySelectorAll("[data-meta]"), {
+            y: 40,
+            autoAlpha: 0,
+            stagger: 0.06,
+            duration: 0.9,
+            ease: "expo.out",
+            scrollTrigger: { trigger: panel, containerAnimation: slide, start: "left 75%", once: true },
+          });
+        });
+        return () => {
+          delete track.dataset.h;
+          delete pin.dataset.h;
+        };
+      });
+
+      // En celular: cada marco se destapa al entrar.
+      mm.add("(max-width: 1023px)", () => {
+        q("[data-panel]").forEach((panel) => {
+          gsap.fromTo(
+            panel.querySelector("[data-frame]"),
+            { clipPath: "inset(10% 6% 10% 6% round 1rem)" },
+            { clipPath: "inset(0% 0% 0% 0% round 1rem)", ease: "none", scrollTrigger: { trigger: panel, start: "top 90%", end: "top 45%", scrub: 0.5 } },
+          );
+          riseIn(panel.querySelectorAll("[data-meta]"), panel, { start: "top 60%", stagger: 0.06 });
         });
       });
+      return () => mm.revert();
     },
     { scope: root },
   );
 
   return (
-    <section ref={root} id="trabajos" aria-labelledby="trabajos-title" className="relative">
-      <div className="mx-auto max-w-[1600px] px-5 pb-28 pt-16 md:px-10 md:pb-40 md:pt-24">
-        <div className="flex flex-wrap items-end justify-between gap-8">
-          <h2 id="trabajos-title" className="font-display text-[clamp(3rem,10vw,6rem)] uppercase leading-[1.05]">
-            Lo que
-            <br />
-            <span data-title-sticker className="sticker sticker-blue -rotate-3 px-[0.2em] pt-[0.08em]">
-              ya hice
-            </span>
+    <section ref={root} id="trabajos" aria-labelledby="trabajos-title" className="bg-ink text-paper">
+      <div className="mx-auto max-w-[1600px] px-5 pb-12 pt-28 md:px-10 md:pt-40">
+        <p className="eyebrow text-paper/60">01 — Trabajos</p>
+        <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+          <h2 id="trabajos-title" data-title className="font-serif text-[clamp(3.2rem,9vw,8.5rem)] leading-[0.92]">
+            Lo que <em className="text-sky">ya hice</em>
           </h2>
-          <p className="max-w-sm text-lg leading-relaxed text-muted">
+          <p data-intro className="max-w-sm text-lg leading-relaxed text-paper/70">
             Tres demos de negocios inventados para mostrar lo que puedo hacer, y la tienda de mi propia marca. Tocá
             cualquiera para abrirla.
           </p>
         </div>
+      </div>
 
-        <div className="mt-20 space-y-28 md:mt-28 md:space-y-40">
+      <div data-pin className="group/pin relative data-[h=on]:flex data-[h=on]:h-svh data-[h=on]:flex-col data-[h=on]:justify-center data-[h=on]:overflow-hidden">
+        <div
+          data-track
+          className="grid gap-24 px-5 pb-28 md:px-10 data-[h=on]:flex data-[h=on]:w-max data-[h=on]:gap-[6vw] data-[h=on]:pb-0 data-[h=on]:pr-[16vw]"
+        >
           {projects.map((p, i) => {
-            const flip = i % 2 === 1;
+            const demo = p.tag === "Demo";
             return (
-              <article
-                key={p.id}
-                data-project
-                aria-labelledby={`p-${p.id}`}
-                className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14"
-              >
-                <div className={`relative lg:col-span-7 ${flip ? "lg:order-2" : ""}`}>
-                  <a
-                    href={p.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-cursor="Abrir"
-                    aria-label={`Abrir ${p.name} (se abre en otra pestaña)`}
-                    className="group block"
-                  >
-                    <div data-slap className="relative">
-                      {/* La etiqueta va pegada sobre la captura: "Demo" queda a la vista siempre. */}
-                      <span
-                        className={`sticker absolute -top-4 z-10 px-3.5 py-1.5 text-sm font-semibold md:-top-5 md:text-base ${flip ? "right-8" : "left-6"} ${p.tag === "Demo" ? "sticker-ink -rotate-3" : "sticker-blue rotate-2"}`}
-                      >
-                        {p.tag === "Demo" ? "Demo · negocio inventado" : p.tag}
-                      </span>
-                      <div
-                        className={`peel rounded-[1.4rem] bg-white p-2.5 outline-2 outline-offset-[12px] outline-dashed outline-line shadow-[0_0_0_1px_var(--color-line),0_30px_50px_-28px_rgb(13_15_26/0.45)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-0 md:p-3 ${flip ? "rotate-[1.5deg]" : "-rotate-[1.5deg]"}`}
-                      >
-                        <div className="overflow-hidden rounded-[0.9rem] bg-paper-soft">
-                          <div className="flex items-center gap-1.5 px-4 py-3">
-                            <span className="size-2.5 rounded-full bg-line" />
-                            <span className="size-2.5 rounded-full bg-line" />
-                            <span className="size-2.5 rounded-full bg-line" />
-                            <span className="ml-3 truncate text-xs text-muted">{p.url.replace("https://", "")}</span>
-                          </div>
-                          <div
-                            className="relative aspect-[16/10] overflow-hidden"
-                            style={
-                              {
-                                // Cuánto tiene que subir la captura para llegar al final (el marco mide 1440×900).
-                                "--shift": `-${((1 - 900 / p.images.fullHeight) * 100).toFixed(2)}%`,
-                                "--dur": `${Math.round(p.images.fullHeight / 1400)}s`,
-                              } as CSSProperties
-                            }
-                          >
-                            <Image
-                              src={p.images.full}
-                              alt={`Captura de la web de ${p.name}`}
-                              width={1440}
-                              height={p.images.fullHeight}
-                              sizes="(min-width: 1024px) 55vw, 100vw"
-                              className="scroll-shot h-auto w-full"
-                            />
-                          </div>
-                        </div>
+              <article key={p.id} data-panel aria-labelledby={`p-${p.id}`} className="lg:w-[min(56vw,calc((100svh-22rem)*1.6))] lg:shrink-0">
+                <a
+                  href={p.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-cursor="Ver"
+                  aria-label={`Abrir ${p.name} (se abre en otra pestaña)`}
+                  className="group block"
+                >
+                  <div data-frame className="relative overflow-hidden rounded-[1rem] bg-ink-soft">
+                    <div
+                      className="relative aspect-[16/10] overflow-hidden"
+                      style={
+                        {
+                          // Cuánto tiene que subir la captura para llegar al final (el marco mide 1440×900).
+                          "--shift": `-${((1 - 900 / p.images.fullHeight) * 100).toFixed(2)}%`,
+                          "--dur": `${Math.round(p.images.fullHeight / 1400)}s`,
+                        } as CSSProperties
+                      }
+                    >
+                      <div data-shot className="absolute -inset-x-[7%] top-0">
+                        <Image
+                          src={p.images.full}
+                          alt={`Captura de la web de ${p.name}`}
+                          width={1440}
+                          height={p.images.fullHeight}
+                          sizes="(min-width: 1024px) 72vw, 100vw"
+                          className="scroll-shot h-auto w-full transition-[filter] duration-700 group-hover:brightness-105"
+                        />
                       </div>
                     </div>
-                  </a>
-
-                  {/* El celular, como otro sticker pegado encima: se ve bien ahí también. */}
-                  <div
-                    data-slap
-                    className={`pointer-events-none absolute -bottom-10 w-[24%] max-w-40 md:w-[19%] ${flip ? "-left-3 md:-left-6" : "-right-3 md:-right-6"}`}
-                  >
-                    <div className={`rounded-[1.5rem] bg-white p-1.5 shadow-[0_0_0_1px_var(--color-line),0_24px_40px_-18px_rgb(13_15_26/0.5)] ${flip ? "-rotate-6" : "rotate-6"}`}>
-                      <Image src={p.images.mobile} alt="" width={390} height={844} sizes="160px" className="h-auto w-full rounded-[1.15rem]" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className={`lg:col-span-5 ${flip ? "lg:order-1" : ""}`}>
-                  <h3 id={`p-${p.id}`} data-rise className="font-display text-[clamp(2.75rem,6vw,4.75rem)] uppercase leading-none">
-                    {p.name}
-                  </h3>
-                  <p data-rise className="mt-5 max-w-[46ch] text-lg leading-relaxed text-ink/80">
-                    {p.summary}
-                  </p>
-                  <ul data-rise className="mt-5 flex flex-wrap gap-2">
-                    {p.features.map((f) => (
-                      <li key={f} className="rounded-full bg-paper-soft px-3 py-1.5 text-sm font-medium text-ink/75">
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <div data-rise className="mt-8 flex flex-wrap gap-3">
-                    <a
-                      href={p.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-sticker btn-sticker-ink group px-6 py-3.5"
+                    {/* La etiqueta "Demo" queda siempre a la vista, arriba a la izquierda. */}
+                    <span
+                      className={`absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-medium backdrop-blur-md ${
+                        demo ? "bg-ink/70 text-paper" : "bg-accent text-white"
+                      }`}
                     >
-                      Ver la web
-                      <Icon name="arrow-up-right" className="size-5 transition-transform group-hover:rotate-45" />
-                    </a>
-                    {p.tag === "Demo" && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          requestDemo({
-                            service: serviceFor[p.id],
-                            message: `Quiero una web como ${p.name} para mi negocio.`,
-                          })
-                        }
-                        className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 font-semibold text-ink shadow-[inset_0_0_0_2px_var(--color-ink)] transition-colors hover:bg-ink hover:text-white"
-                      >
-                        Quiero una así
-                      </button>
-                    )}
+                      {demo ? "Demo · negocio inventado" : p.tag}
+                    </span>
+                  </div>
+                </a>
+
+                <div className="mt-7 grid gap-6 md:grid-cols-[auto_1fr] md:gap-10">
+                  <span data-meta className="font-serif text-2xl italic text-sky">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <div data-meta className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+                      <h3 id={`p-${p.id}`} className="font-serif text-5xl leading-none md:text-6xl">
+                        {p.name}
+                      </h3>
+                      <span className="text-sm text-paper/60">
+                        {p.kind} · {p.year}
+                      </span>
+                    </div>
+                    <p data-meta className="mt-4 max-w-[52ch] leading-relaxed text-paper/70">
+                      {p.summary}
+                    </p>
+                    <p data-meta className="mt-4 text-sm text-paper/50">
+                      {p.features.join("  ·  ")}
+                    </p>
+                    <div data-meta className="mt-6 flex flex-wrap gap-3">
+                      <a href={p.url} target="_blank" rel="noopener noreferrer" className="btn btn-light group px-6 py-3 text-sm">
+                        <Roll>Ver la web</Roll>
+                        <Icon name="arrow-up-right" className="size-4 transition-transform duration-500 group-hover:rotate-45" />
+                      </a>
+                      {demo && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            requestDemo({
+                              service: serviceFor[p.id],
+                              message: `Quiero una web como ${p.name} para mi negocio.`,
+                            })
+                          }
+                          className="btn btn-outline px-6 py-3 text-sm [--btn-hover:var(--color-paper)] hover:!text-ink"
+                        >
+                          <Roll>Quiero una así</Roll>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </article>
             );
           })}
+        </div>
+
+        {/* Contador y barra de progreso de la galería (solo en compu, mientras está fija). */}
+        <div aria-hidden className="hidden items-center gap-6 px-10 pt-8 group-data-[h=on]/pin:flex">
+          <span className="font-serif text-xl tabular-nums">
+            <span data-current>01</span> <span className="text-paper/40">/ {total}</span>
+          </span>
+          <span className="h-px flex-1 bg-paper/15">
+            <span data-progress className="block h-full origin-left scale-x-0 bg-paper" />
+          </span>
+          <span className="text-sm text-paper/50">Seguí bajando</span>
         </div>
       </div>
     </section>

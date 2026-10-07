@@ -1,31 +1,53 @@
+"use client";
+
+import { useRef } from "react";
 import { site } from "@/config/site";
+import { gsap, useGSAP, prefersReducedMotion, revealTitle } from "@/components/motion/gsap";
 import { Icon } from "@/components/ui/Icon";
 
-/** Preguntas frecuentes con <details>: funciona sin JS y es accesible de fábrica. */
+/** Preguntas frecuentes con <details>: funciona sin JS, es accesible de fábrica y se abre suave. */
 export function Faq() {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      if (prefersReducedMotion()) return;
+      const q = gsap.utils.selector(root);
+      revealTitle(q("[data-title]"));
+      gsap.from(q("[data-q]"), {
+        y: 30,
+        autoAlpha: 0,
+        duration: 1,
+        stagger: 0.08,
+        ease: "expo.out",
+        scrollTrigger: { trigger: q("[data-qs]")[0], start: "top 80%", once: true },
+      });
+    },
+    { scope: root },
+  );
+
   return (
-    <section id="preguntas" aria-labelledby="faq-title" className="die-line">
+    <section ref={root} id="preguntas" aria-labelledby="faq-title">
       <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-28 md:px-10 md:py-40 lg:grid-cols-[1fr_1.4fr]">
-        <h2 id="faq-title" className="font-display text-[clamp(3rem,8vw,5rem)] uppercase leading-[1.05]">
-          Lo que todos{" "}
-          <span className="sticker sticker-white -rotate-2 whitespace-nowrap px-[0.2em] pt-[0.08em] text-accent">preguntan</span>
-        </h2>
-        <div className="space-y-6">
-          {site.faq.map((item, i) => (
-            <details
-              key={item.q}
-              className={`sticker sticker-white group block !rounded-[1.4rem] transition-[rotate] duration-500 open:rotate-0 ${i % 2 ? "rotate-[0.8deg]" : "-rotate-[0.8deg]"}`}
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 px-6 py-6 text-xl font-semibold md:px-8 md:text-2xl [&::-webkit-details-marker]:hidden">
-                {item.q}
+        <div>
+          <p className="eyebrow text-muted">06 — Preguntas</p>
+          <h2 id="faq-title" data-title className="mt-6 font-serif text-[clamp(3rem,6vw,5.5rem)] leading-[0.92]">
+            Lo que todos <em className="text-accent">preguntan</em>
+          </h2>
+        </div>
+        <div data-qs className="border-t border-line">
+          {site.faq.map((item) => (
+            <details key={item.q} data-q className="unfold group border-b border-line">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-7 text-xl md:text-2xl [&::-webkit-details-marker]:hidden">
+                <span className="transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-2">{item.q}</span>
                 <span
                   aria-hidden
-                  className="sticker sticker-blue grid size-11 shrink-0 place-items-center !rounded-full transition-transform duration-300 [--sticker-edge:3px] group-open:rotate-45"
+                  className="grid size-10 shrink-0 place-items-center rounded-full border border-line transition-all duration-500 group-hover:border-ink group-open:rotate-45 group-open:border-ink group-open:bg-ink group-open:text-paper"
                 >
-                  <Icon name="plus" className="size-5" />
+                  <Icon name="plus" className="size-4" />
                 </span>
               </summary>
-              <p className="max-w-xl px-6 pb-7 text-lg leading-relaxed text-ink/75 md:px-8">{item.a}</p>
+              <p className="max-w-xl pb-8 text-lg leading-relaxed text-muted">{item.a}</p>
             </details>
           ))}
         </div>

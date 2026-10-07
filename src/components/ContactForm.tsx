@@ -6,11 +6,12 @@ import { site } from "@/config/site";
 import { sendContact, type ContactState } from "@/app/actions";
 import { onDemoRequest } from "@/lib/demo-bus";
 import { Icon } from "@/components/ui/Icon";
+import { Roll } from "@/components/ui/Roll";
 
 const initial: ContactState = { status: "idle" };
 
 const input = "field";
-const label = "text-base font-semibold";
+const label = "text-sm font-medium";
 
 function FieldError({ id, error }: { id: string; error?: string }) {
   if (!error) return null;
@@ -59,8 +60,8 @@ export function ContactForm() {
   if (state.status === "success") {
     return (
       <div role="status" className="flex min-h-96 flex-col items-start justify-center">
-        <span className="sticker sticker-blue -rotate-3 px-4 pb-1 pt-2 font-display text-2xl uppercase">¡Llegó!</span>
-        <p className="mt-6 font-display text-5xl uppercase leading-[1.05] md:text-6xl">
+        <span className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-white"><Icon name="check" className="size-4" />¡Llegó!</span>
+        <p className="mt-6 font-serif text-5xl leading-[0.95] md:text-7xl">
           Gracias{state.name ? `, ${state.name}` : ""}.
         </p>
         <p className="mt-6 max-w-md text-lg text-ink/75">
@@ -89,7 +90,7 @@ export function ContactForm() {
         startTransition(() => action(data));
       }}
       noValidate
-      className="relative grid gap-6"
+      className="relative grid gap-8"
     >
       {/* Honeypot: invisible para personas, los bots lo completan. */}
       <div aria-hidden className="absolute -left-[9999px]">
@@ -99,7 +100,7 @@ export function ContactForm() {
         </label>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-2">
         <div>
           <label htmlFor="name" className={label}>
             Tu nombre
@@ -123,7 +124,7 @@ export function ContactForm() {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-2">
         <div>
           <label htmlFor="business" className={label}>
             Tu negocio <span className="font-normal text-muted">(opcional)</span>
@@ -197,7 +198,7 @@ export function ContactForm() {
                 href={site.links.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-[#9fb0ff] underline underline-offset-4"
+                className="font-semibold text-sky underline underline-offset-4"
               >
                 Abrir WhatsApp
               </a>
@@ -209,9 +210,9 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={pending}
-        className="btn-sticker group w-full px-8 py-5 text-lg md:w-auto md:justify-self-start"
+        className="btn group w-full px-8 py-4 text-base md:w-auto md:justify-self-start"
       >
-        {pending ? "Enviando…" : "Enviar mensaje"}
+        <Roll>{pending ? "Enviando…" : "Enviar mensaje"}</Roll>
         <Icon name="arrow-right" className="size-5 transition-transform group-hover:translate-x-1" />
       </button>
     </form>

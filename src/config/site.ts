@@ -39,8 +39,9 @@ export const site = {
     "Hago webs rápidas, con reservas online y bien posicionadas en Google para negocios de Uruguay. Mirá mis trabajos y pedí tu demo.",
 
   hero: {
-    // Cada renglón del título es un sticker que se puede arrastrar.
-    lines: ["Webs que", "hacen", "vender."],
+    // Título de la portada. La última palabra va en cursiva azul y va cambiando entre las de "rotate".
+    lines: ["Webs que hacen", "vender."],
+    rotate: ["vender", "reservar", "crecer"],
     intro:
       "Diseño y programo webs para negocios que quieren verse grandes en internet: rápidas, lindas en el celular y pensadas para que te escriban.",
   },
