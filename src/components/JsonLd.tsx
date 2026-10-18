@@ -8,6 +8,7 @@ export function JsonLd() {
     name: `${site.name} · ${site.role}`,
     description: site.description,
     url: site.siteUrl,
+    founder: { "@type": "Person", name: site.owner },
     areaServed: { "@type": "Country", name: "Uruguay" },
     knowsAbout: ["Diseño web", "Desarrollo web", "Landing pages", "Reservas online", "SEO local"],
     sameAs: Object.values(site.links).filter((v) => v.startsWith("http")),

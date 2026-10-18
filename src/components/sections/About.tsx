@@ -64,6 +64,9 @@ export function About() {
             <h2 id="sobre-title" data-title className="mt-6 font-serif text-[clamp(3rem,6vw,5.5rem)] leading-[0.92]">
               Quién <em className="text-accent">soy</em>
             </h2>
+            <p className="mt-6 max-w-xs text-muted">
+              Soy {site.owner}, el que diseña y programa cada web de {site.name}.
+            </p>
           </div>
           <p data-manifesto className="font-serif text-[2rem] leading-[1.12] md:text-[3.4rem] md:leading-[1.06]">
             {site.manifesto.split(" ").map((w, i) => (

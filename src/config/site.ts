@@ -28,9 +28,12 @@ export type Service = {
 };
 
 export const site = {
-  name: "Emanuel Yordi",
+  /** La marca del estudio: logo, pestaña, Google y pie de página. */
+  name: "Rivelo Studio",
+  /** Quién está detrás de la marca. Aparece en "Sobre mí", el pie y los datos para Google. */
+  owner: "Emanuel Yordi",
   /** Nombre que va en la pestaña y en Google. */
-  title: "Emanuel Yordi · Diseño y desarrollo web",
+  title: "Rivelo Studio · Diseño y desarrollo web",
   role: "Diseño y desarrollo web",
   location: "Uruguay",
   timeZone: "America/Montevideo",

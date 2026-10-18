@@ -74,13 +74,13 @@ export function Footer() {
 
       <p aria-hidden className="mt-20 select-none whitespace-nowrap px-5 font-serif text-[16vw] leading-[0.85] md:px-10">
         <span data-wordmark className="block">
-          Emanuel <em className="text-sky">Yordi</em>
+          Rivelo <em className="text-sky">Studio</em>
         </span>
       </p>
 
       <div className="relative mx-auto flex max-w-[1600px] flex-col gap-3 border-t border-paper/15 px-5 py-6 text-sm text-paper/50 md:flex-row md:justify-between md:px-10">
         <p>
-          © {new Date().getFullYear()} {site.name} · Diseñado y programado por mí.
+          © {new Date().getFullYear()} {site.name} · Diseñado y programado por {site.owner}.
         </p>
         <p className="flex gap-5">
           <Link href="/privacidad" className="underline-offset-4 hover:text-paper hover:underline">

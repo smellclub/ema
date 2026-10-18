@@ -147,7 +147,9 @@ export function Work() {
                         } as CSSProperties
                       }
                     >
-                      <div data-shot className="absolute -inset-x-[7%] top-0">
+                      {/* En el celu la captura va a lo ancho exacto del marco, si no se cortan los textos de los costados.
+                          Solo en la galería horizontal sobra un 7% por lado para el efecto de profundidad. */}
+                      <div data-shot className="absolute inset-x-0 top-0 group-data-[h=on]/pin:-inset-x-[7%]">
                         <Image
                           src={p.images.full}
                           alt={`Captura de la web de ${p.name}`}
