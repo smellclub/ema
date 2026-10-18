@@ -59,15 +59,15 @@ export function Header() {
     <>
       <header ref={bar} className="fixed inset-x-0 top-0 z-50 text-white mix-blend-difference">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between gap-6 px-5 md:h-24 md:px-10">
-          <a href="#inicio" className="group flex items-baseline gap-2 font-serif text-2xl md:text-[1.75rem]" aria-label={`${site.name}, ir al inicio`}>
-            Emanuel <em className="transition-transform duration-500 group-hover:translate-x-1">Yordi</em>
+          <a href="#inicio" className="group flex items-baseline gap-2 whitespace-nowrap font-serif text-2xl md:text-[1.75rem]" aria-label={`${site.name}, ir al inicio`}>
+            Rivelo <em className="transition-transform duration-500 group-hover:translate-x-1">Studio</em>
           </a>
 
           <nav aria-label="Principal" className="hidden md:block">
-            <ul className="flex gap-8">
+            <ul className="flex gap-5 lg:gap-8">
               {nav.map((item, i) => (
                 <li key={item.href}>
-                  <a href={item.href} className="group flex items-start gap-1 text-[0.95rem]">
+                  <a href={item.href} className="group flex items-start gap-1 whitespace-nowrap text-[0.95rem]">
                     <span className="text-[0.65rem] opacity-60">0{i + 1}</span>
                     <Roll>{item.label}</Roll>
                   </a>

@@ -10,6 +10,21 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
 /** true si la persona pidió "reducir movimiento" en su sistema (accesibilidad). */
+/**
+ * La máscara de SplitText recorta justo en el borde del renglón, y con interlineado apretado
+ * eso corta las colas de letras como la "y" o la "g" en cursiva ("soy", "ya hice").
+ * Le damos aire abajo y a la derecha con padding, y lo compensamos con margen negativo
+ * para que el diseño no se mueva ni un píxel.
+ */
+function giveMasksRoom(masks: Element[]) {
+  for (const m of masks as HTMLElement[]) {
+    m.style.paddingBottom = "0.18em";
+    m.style.marginBottom = "-0.18em";
+    m.style.paddingRight = "0.12em";
+    m.style.marginRight = "-0.12em";
+  }
+}
+
 export function prefersReducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
@@ -28,8 +43,10 @@ export function revealTitle(
     mask: "lines",
     autoSplit: true,
     onSplit(self) {
+      giveMasksRoom(self.masks);
       return gsap.from(self.lines, {
-        yPercent: 110,
+        // Arranca más abajo que la máscara (que ahora tiene aire extra) para que no asome.
+        yPercent: 130,
         duration: 1,
         ease: "expo.out",
         stagger: 0.1,
@@ -53,8 +70,9 @@ export function revealChars(targets: gsap.DOMTarget, opts: { delay?: number; tri
     mask: "lines",
     autoSplit: true,
     onSplit(self) {
+      giveMasksRoom(self.masks);
       return gsap.from(self.chars, {
-        yPercent: 120,
+        yPercent: 135,
         rotate: 8,
         duration: 1.1,
         ease: "expo.out",
